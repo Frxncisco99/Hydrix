@@ -321,7 +321,7 @@ async function toggleGuard(){if(!model||$('#guard').disabled)return;const g=$('#
 async function setValve(open){const v=model&&mainValve();if(!v)return toast('No hay una válvula registrada');if(valveBusy)return;
  if(open&&v.estado!=='cerrada')return toast('Espera a confirmar que la válvula esté cerrada');if(!open&&v.estado==='cerrada')return toast('La válvula ya está cerrada');
  valveBusy=true;renderValve();
- try{const id=await rest('POST','solicitar_comando_valvula_hydrix',{rpc:1,body:{p_valvula_id:v.id,p_accion:open?'abrir':'cerrar'}});if(!id)throw Error('La base de datos no confirmó el comando');
+ try{await rest('POST','solicitar_comando_valvula_hydrix',{rpc:1,body:{p_valvula_id:v.id,p_accion:open?'abrir':'cerrar'}});
   await load(true,true);toast('Comando enviado; esperando confirmación de la válvula')}
  catch(err){toast('No se pudo completar: '+err.message)}finally{valveBusy=false;renderValve()}}
 async function cancelClose(){const a=curAlert();if(!a)return;
