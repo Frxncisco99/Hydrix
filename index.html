@@ -41,7 +41,7 @@ h1,h2,h3{font-family:'Bricolage Grotesque','DM Sans',sans-serif;margin:0;letter-
 
 /* HERO: la llave */
 .hero{position:relative;isolation:isolate;overflow:hidden;border-radius:30px;padding:30px 40px;color:#fff;display:grid;grid-template-columns:minmax(260px,430px) 1fr;gap:36px;align-items:center;margin-bottom:20px;background:radial-gradient(110% 130% at 0 0,var(--hero2),transparent 60%),linear-gradient(135deg,var(--hero1),#0b527f)}
-.hero::before{content:'';position:absolute;inset:0;z-index:-1;background:radial-gradient(110% 130% at 0 0,#c0994e,transparent 60%),linear-gradient(135deg,#4a3d2a,#7b6543);opacity:0;transition:opacity 1.2s}
+.hero::before{content:'';position:absolute;inset:0;z-index:-1;background:radial-gradient(110% 130% at 0 0,#6e6e6e,transparent 60%),linear-gradient(135deg,#545454,#9f9d9d);opacity:0;transition:opacity 1.2s}
 [data-armed="0"] .hero::before{opacity:1}
 .guard{position:relative;display:block;width:min(300px,64vw);aspect-ratio:200/260;margin:0 auto;filter:drop-shadow(0 18px 34px rgba(76,201,242,.5));animation:glow 3.2s ease-in-out infinite;transition:transform .3s var(--ease),filter 1.6s;--shell:rgba(255,255,255,.13);--rim:rgba(255,255,255,.75)}
 @keyframes glow{50%{filter:drop-shadow(0 18px 48px rgba(76,201,242,.85))}}
@@ -49,9 +49,9 @@ h1,h2,h3{font-family:'Bricolage Grotesque','DM Sans',sans-serif;margin:0;letter-
 [data-armed="0"] .guard{animation:none;filter:drop-shadow(0 12px 22px rgba(0,0,0,.28)) saturate(.55);--shell:rgba(255,232,190,.1);--rim:#d8c196}
 .guard svg{width:100%;height:100%;display:block;overflow:visible}
 .shell{fill:var(--shell);transition:fill 1.6s}.rim{fill:none;stroke:var(--rim);stroke-width:4;transition:stroke 1.6s}
-.shine{fill:none;stroke:#fff;stroke-width:6;stroke-linecap:round;opacity:0;transition:opacity 1.2s}[data-armed="0"] .shine{opacity:0}
-.lvl{opacity:0;transform:none!important;transition:transform 2.6s cubic-bezier(.55,0,.3,1),opacity .3s ease}[data-armed="0"] .lvl{transform:none!important;opacity:0}
-.wv,.w2,.bb,.cracks{display:none!important;opacity:0!important;animation:none!important}
+.shine{fill:none;stroke:#fff;stroke-width:6;stroke-linecap:round;opacity:.4;transition:opacity 1.2s}[data-armed="0"] .shine{opacity:.08}
+.lvl{opacity:0;transition:transform 2.6s cubic-bezier(.55,0,.3,1),opacity .3s ease}[data-armed="0"] .lvl{transform:translateY(215px);opacity:0}
+.wv,.w2,.bb,.cracks{opacity:0!important;animation:none!important}
 .cracks path{stroke:#cdb48a;stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset .4s}
 [data-armed="0"] .cracks path{stroke-dashoffset:0;transition:stroke-dashoffset 1.5s ease calc(1.2s + var(--k)*.35s)}
 .dl{position:absolute;left:0;right:0;top:46%;display:grid;justify-items:center;gap:3px;pointer-events:none;text-shadow:0 2px 12px rgba(6,40,66,.55);transition:color 1.2s}
@@ -71,7 +71,7 @@ h1,h2,h3{font-family:'Bricolage Grotesque','DM Sans',sans-serif;margin:0;letter-
 .s-ico{width:42px;height:42px;border-radius:13px;background:color-mix(in srgb,var(--c) 15%,transparent);color:var(--c);display:grid;place-items:center}
 .s-name{font:700 15px 'Bricolage Grotesque'}.s-meta{font-size:12px;color:var(--muted)}
 .s-read strong{font:800 26px/1 'Bricolage Grotesque'}.s-read small{font:500 11px 'DM Sans';color:var(--muted);margin-left:3px}
-.chart{display:flex;align-items:flex-end;gap:4px;height:170px;padding-top:24px}
+.realtime{height:220px;position:relative;margin:0 -4px 18px}.realtime canvas{width:100%!important;height:100%!important}.chart{display:flex;align-items:flex-end;gap:4px;height:170px;padding-top:24px}
 .bar{flex:1;height:0;border-radius:6px 6px 3px 3px;background:linear-gradient(#5cc6ee,#a8e2f5);position:relative;animation:grow .8s var(--ease) forwards;animation-delay:calc(var(--i)*20ms)}
 @keyframes grow{to{height:var(--h)}}
 .bar span{position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);font-size:11px;padding:3px 7px;border-radius:6px;opacity:0;pointer-events:none;white-space:nowrap;transition:.15s;z-index:2}.bar:hover span{opacity:1}
@@ -105,7 +105,7 @@ h1,h2,h3{font-family:'Bricolage Grotesque','DM Sans',sans-serif;margin:0;letter-
 .legend{display:flex;gap:16px;margin-top:16px;color:var(--muted);font-size:12px;flex-wrap:wrap}.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px}
 .ev{display:grid;grid-template-columns:100px 1fr auto;gap:14px;align-items:center;padding:14px 0;border-bottom:1px solid var(--line)}.ev:last-child{border:0}.ev small{color:var(--muted);display:block}
 .empty{padding:26px 0;text-align:center;color:var(--muted)}
-select,.field input{border:1px solid var(--line);border-radius:10px;padding:9px 12px;background:var(--card);width:100%}select{width:auto}
+select,.field input,.field textarea{border:1px solid var(--line);border-radius:10px;padding:9px 12px;background:var(--card);width:100%}select,.field input[type=checkbox]{width:auto}.field input[type=checkbox]{margin:0 7px 0 0;vertical-align:middle}.field textarea{resize:vertical;min-height:86px;overflow-wrap:anywhere}
 .cmd{display:flex;justify-content:space-between;gap:10px;padding:12px 0;border-bottom:1px solid var(--line);font-size:13px}.cmd:last-child{border:0}.cmd span{color:var(--muted)}.cmd strong{font-size:12px}
 .mw{position:fixed;inset:0;background:rgba(6,28,44,.55);backdrop-filter:blur(3px);display:none;align-items:center;justify-content:center;padding:20px;z-index:20}.mw.open{display:flex}
 .modal{background:var(--card);border-radius:22px;width:100%;max-width:520px;max-height:90vh;overflow:auto;padding:26px;animation:pop .3s var(--ease)}@keyframes pop{from{opacity:0;transform:translateY(14px) scale(.97)}}
@@ -127,9 +127,7 @@ select,.field input{border:1px solid var(--line);border-radius:10px;padding:9px 
 .hero{grid-template-columns:1fr;text-align:center;padding:24px 18px;gap:18px}.hc p{margin:auto}.hm{justify-content:center;grid-template-columns:repeat(2,auto)}.hc h2{font-size:30px}}
 @media(max-width:560px){.sensors,.form{grid-template-columns:1fr}.ev{grid-template-columns:1fr auto}.ev>small{grid-column:1/-1}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
-</style>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
+</style><script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script></head>
 <body data-armed="0">
 <div class="app locked" id="app">
 <aside class="side"><div class="brand"><div class="logo" data-i="drop"></div><div><b>Hydrix</b><small>Hogar inteligente</small></div></div><nav class="nav" id="nav" aria-label="Navegación principal"></nav>
@@ -153,7 +151,7 @@ select,.field input{border:1px solid var(--line);border-radius:10px;padding:9px 
  <div class="cols">
   <div class="stack">
    <div class="card"><div class="head"><h2>Sensores</h2></div><div class="sensors" data-sensors></div></div>
-   <div class="card"><div class="head"><h2>Consumo <small>últimas 24 horas</small></h2><button class="link" onclick="go('calendario')">Ver calendario</button></div><div class="chart" id="chart"></div><div class="axis" id="axis"></div></div>
+  <div class="card"><div class="head"><div><h2>Flujo en tiempo real <small>últimas lecturas</small></h2><small id="realtime-note">Esperando datos del sensor</small></div><button class="link" onclick="go('calendario')">Ver calendario</button></div><div class="realtime"><canvas id="realtimeChart" aria-label="Flujo de agua en litros por minuto"></canvas></div><div class="head"><h2>Consumo <small>últimas 24 horas</small></h2></div><div class="chart" id="chart"></div><div class="axis" id="axis"></div></div>
   </div>
   <div class="stack">
    <div class="card alert-card" id="alert"><div class="a-ico" id="aico"></div><h3 id="at"></h3><p id="ax"></p>
@@ -168,7 +166,7 @@ select,.field input{border:1px solid var(--line);border-radius:10px;padding:9px 
  </div>
 </section>
 
-<section id="sensores" class="view"><div class="card"><div class="head"><div><h2>Todos los sensores</h2><small>Últimas lecturas registradas.</small></div></div><div class="sensors" data-sensors></div></div></section>
+<section id="sensores" class="view"><div class="card"><div class="head"><div><h2>Todos los sensores</h2><small>Últimas lecturas registradas.</small></div><button class="btn primary" onclick="sensorAddModal()">+ Añadir sensor</button></div><div class="sensors" data-sensors></div></div></section>
 <section id="calendario" class="view"><div class="cols">
  <div class="card"><div class="head"><h2 id="calt"></h2><small>Toca un día para ver el detalle</small></div><div class="cal" id="cal"></div><div class="legend"><span><i style="background:var(--soft)"></i>Normal</span><span><i style="background:color-mix(in srgb,var(--warn) 24%,var(--card))"></i>Cerca de la meta</span><span><i style="background:color-mix(in srgb,var(--bad) 26%,var(--card))"></i>Sobre la meta</span></div></div>
  <div class="card"><div class="head"><h2 id="dtl"></h2><span class="pill ok" id="dpl"></span></div><div class="mini"><div class="mi"><span>Consumo total</span><strong id="dt"></strong></div><div class="mi"><span>Promedio por hora</span><strong id="da"></strong></div><div class="mi"><span>Flujo máximo</span><strong id="dm"></strong></div><div class="mi"><span>Eventos</span><strong id="de"></strong></div></div></div>
@@ -213,7 +211,7 @@ const rows=r=>`<div class="mini">${r.map(x=>`<div class="mi"><span>${esc(x[0])}<
 
 /* ---------- Supabase ---------- */
 const config={url:'https://neuifbdkjdumudhgxupv.supabase.co',key:'sb_publishable_w8Bi8TvmnXynCCUEf3tJFQ_j9dy0GlR'};
-let session=null,model=null,busy=false,cur='inicio',selectedDay=null,loadedOnce=false;
+let session=null,model=null,busy=false,cur='inicio',selectedDay=null,loadedOnce=false,realtimeChart=null;
 try{session=JSON.parse(sessionStorage.getItem('hydrix_session')||'null')}catch{}
 const saveSession=v=>{session={access:v.access_token,refresh:v.refresh_token,expiresAt:Date.now()+v.expires_in*1000,user:v.user};sessionStorage.setItem('hydrix_session',JSON.stringify(session))};
 async function auth(path,body){const r=await fetch(config.url+'/auth/v1/'+path,{method:'POST',headers:{'Content-Type':'application/json',apikey:config.key},body:JSON.stringify(body)});const j=await r.json().catch(()=>({}));if(!r.ok)throw Error(j.msg||j.error_description||j.message||'Error de autenticación');return j}
@@ -301,7 +299,7 @@ function renderAll(){const m=model,tz=tzOf(),today=dayKey(Date.now(),tz),[y,mo,d
  $('#gs').textContent=on?'Vigilamos tus sensores y te avisamos si hay una fuga.':'La gota está vacía: los sensores registran consumo, pero no se generan alertas.';
  $('#hint').textContent=on?'Toca la gota para apagar el monitoreo':'Toca la gota para activar el monitoreo';
  $('#dl').innerHTML=ic(on?'lock':'warn')+`<b>${on?'Activo':'Inactivo'}</b><small>Toca para cambiar</small>`;$('#guard').setAttribute('aria-label',on?'Monitoreo activo. Toca para apagar':'Monitoreo apagado. Toca para activar');$('#guard').setAttribute('aria-pressed',String(on));
- renderSensors();renderValve();renderAlerts();renderChart();renderWeek();renderCalendar();renderEvents();renderCmds();head()}
+ renderSensors();renderValve();renderAlerts();renderRealtimeChart();renderChart();renderWeek();renderCalendar();renderEvents();renderCmds();head()}
 
 const SL={normal:'Normal',anomalia:'Anomalía',sin_datos:'Sin datos',desconectado:'Desconectado'};
 function sensorRows(){const m=model;return m.sensores_fisicos.filter(x=>!x.retirado_en).map(s=>({s,p:m.puntos_medicion.find(x=>x.id===s.punto_id),r:m.lecturas.find(x=>x.sensor_id===s.id),st:s.estado==='anomalia'?'alert':s.estado==='normal'?'ok':'off'}))}
@@ -309,11 +307,38 @@ function renderSensors(){const html=sensorRows().map((o,i)=>{const rec=o.r&&Date
  return`<button class="sensor ${o.st}" onclick="sensorModal(${i})"><div class="s-top"><span class="s-ico">${ic('drop')}</span><span class="pill" style="--c:${o.st==='alert'?'var(--bad)':o.st==='ok'?'var(--ok)':'#758795'}">${esc(SL[o.s.estado]||o.s.estado)}</span></div><div><div class="s-name">${esc(o.p?.nombre||'Sensor')}</div><div class="s-meta">${o.r?'Última lectura: '+esc(shortDate(o.r.medido_en)):'Sin lecturas recientes'}</div></div><div class="s-read"><strong>${rec?fmt(o.r.flujo_l_min,2):'—'}<small>L/min</small></strong></div></button>`}).join('')||'<div class="empty">Aún no hay sensores registrados.</div>';
  $$('[data-sensors]').forEach(e=>e.innerHTML=html)}
 function sensorModal(i){const o=sensorRows()[i];if(!o)return;modal(o.p?.nombre||'Sensor',SL[o.s.estado]||o.s.estado,rows([['Flujo más reciente',o.r?fmt(o.r.flujo_l_min,2)+' L/min':'Sin lecturas'],['Fecha de lectura',o.r?shortDate(o.r.medido_en):'—'],['Batería',o.s.bateria_pct==null?'Sin dato':fmt(o.s.bateria_pct)+' %'],['Diámetro interno',o.p?.diametro_interno_mm?fmt(o.p.diametro_interno_mm,1)+' mm':'Sin dato']]))}
+function sensorAddModal(){
+ if(!model)return;
+ const hasTotal=model.puntos_medicion.some(p=>p.es_consumo_total&&p.activo);
+ modal('Añadir sensor','Registra un medidor físico y su calibración real.',`<form id="sensor-form" class="form">
+  <div class="field full"><label for="s-serie">Número de serie del ESP32</label><input id="s-serie" maxlength="100" required autocomplete="off" spellcheck="false" placeholder="Serie impresa en el dispositivo"></div>
+  <div class="field"><label for="s-ubicacion">Ubicación</label><input id="s-ubicacion" maxlength="80" required placeholder="Cocina"></div>
+  <div class="field"><label for="s-punto">Nombre del punto</label><input id="s-punto" maxlength="80" required placeholder="Fregadero"></div>
+  <div class="field"><label for="s-diametro">Diámetro interno (mm)</label><input id="s-diametro" type="number" min="0.01" step="any" required></div>
+  <div class="field"><label for="s-factor">Pulsos por litro calibrados</label><input id="s-factor" type="number" min="0.0001" step="any" required></div>
+  <div class="field full"><label><input id="s-total" type="checkbox" ${hasTotal?'disabled':''}> Este sensor mide el consumo total de la casa</label>${hasTotal?'<small>Ya hay un medidor general activo.</small>':''}</div>
+  <div class="actions"><button type="button" class="btn ghost" onclick="closeM()">Cancelar</button><button type="submit" class="btn primary">Registrar sensor</button></div>
+ </form>`);
+ $('#sensor-form').onsubmit=async e=>{
+  e.preventDefault();const b=e.target.querySelector('[type=submit]');b.disabled=true;
+  try{
+   const result=await rest('POST','agregar_sensor_hydrix',{rpc:1,body:{
+    p_casa_id:model.house.id,p_serie:$('#s-serie').value.trim(),
+    p_ubicacion:$('#s-ubicacion').value.trim(),p_punto:$('#s-punto').value.trim(),
+    p_diametro_mm:Number($('#s-diametro').value),p_pulsos_por_litro:Number($('#s-factor').value),
+    p_es_consumo_total:$('#s-total').checked
+   }});
+   if(!result?.sensor_id||!result?.token)throw Error('No se recibió la clave del sensor');
+   await load(true);
+   modal('Sensor registrado','Guarda estos datos ahora: la clave no volverá a mostrarse.',`<div class="form"><div class="field full"><label for="new-id">ID del sensor</label><input id="new-id" readonly value="${esc(result.sensor_id)}" onclick="this.select()"></div><div class="field full"><label for="new-token">Clave del dispositivo</label><textarea id="new-token" readonly onclick="this.select()">${esc(result.token)}</textarea><small>Configura este ID y esta clave en el ESP32. El registro no confirma que ya esté transmitiendo lecturas.</small></div><div class="actions"><button class="btn primary" onclick="closeM()">Ya guardé los datos</button></div></div>`);
+  }catch(err){toast('No se pudo añadir: '+err.message);b.disabled=false}
+ };
+}
 
 const valveSVG=`<svg class="pipe" viewBox="0 0 240 50" aria-hidden="true"><rect class="body" y="17" width="240" height="16" rx="8"/><line class="flow" x1="8" y1="25" x2="104" y2="25"/><line class="flow after" x1="136" y1="25" x2="232" y2="25"/><circle class="hub" cx="120" cy="25" r="13"/><g class="wheel"><path d="M120 5v40M100 25h40" stroke-width="3" stroke-linecap="round"/></g></svg>`;
-function renderValve(){const v=mainValve(),state=v?.estado||'sin datos',open=state==='abierta';document.body.classList.toggle('vc',state!=='abierta');
+function renderValve(){const v=mainValve(),state=v?.estado||'sin datos',open=state==='abierta',known=state==='abierta'||state==='cerrada';document.body.classList.toggle('vc',state!=='abierta');
  $$('[data-vx]').forEach(e=>e.textContent=state[0].toUpperCase()+state.slice(1).replace('_',' '));
- $$('[data-valve]').forEach(e=>e.innerHTML=valveSVG+`<div class="vr"><div><h3>${esc(v?.nombre||'No hay válvula registrada')}</h3><p>Estado confirmado: ${esc(state)}${v?.ultima_confirmacion_en?' · '+esc(shortDate(v.ultima_confirmacion_en)):''}</p></div><button class="switch" role="switch" aria-label="${open?'Cerrar':'Abrir'} válvula principal" aria-checked="${open}" ${v?'':'disabled'} onclick="setValve(${!open})"></button></div>`);
+ $$('[data-valve]').forEach(e=>e.innerHTML=valveSVG+`<div class="vr"><div><h3>${esc(v?.nombre||'No hay válvula registrada')}</h3><p>Estado confirmado: ${esc(state)}${v?.ultima_confirmacion_en?' · '+esc(shortDate(v.ultima_confirmacion_en)):''}${v&&!known?' · espera confirmación para usar el interruptor':''}</p></div><button class="switch" role="switch" aria-label="${open?'Cerrar':'Abrir'} válvula principal" aria-checked="${open}" ${v&&known&&!valveBusy?'':'disabled'} onclick="setValve(${!open})"></button></div>`);
  $('#vpill').className='pill '+(open?'ok':state==='cerrada'?'alert':'off');$('#vpill').textContent=state}
 function renderAlerts(){const a=curAlert(),card=$('#alert');card.className='card alert-card '+(a?'alert':'ok');
  $('#aico').innerHTML=ic(a?'warn':'check');
@@ -330,6 +355,18 @@ function tickCd(){if(!model)return;const a=curAlert(),el=$('#av');
 setInterval(tickCd,1000);
 function alertModal(){const a=curAlert();if(!a)return;modal('Detalle de alerta',a.descripcion||a.tipo,rows([['Tipo',a.tipo],['Subtipo',a.subtipo||'—'],['Estado',a.estado],['Detectada',shortDate(a.detectada_en)],['Cierre programado',a.cierre_programado_en?shortDate(a.cierre_programado_en):'No programado'],['Distancia estimada',a.distancia_estimada_m==null?'Sin dato':fmt(a.distancia_estimada_m,1)+' m']]))}
 
+function renderRealtimeChart(){
+ const canvas=$('#realtimeChart'),note=$('#realtime-note');if(!canvas||!model)return;
+ const tp=totalPoint(),items=model.lecturas.filter(x=>!tp||x.punto_id===tp.id).slice(0,30).reverse();
+ if(!items.length){if(realtimeChart){realtimeChart.destroy();realtimeChart=null}note.textContent='Sin lecturas del sensor todavía';return}
+ note.textContent=`${items.length} lecturas · actualizado ${shortDate(items[items.length-1].medido_en)}`;
+ if(typeof Chart==='undefined'){note.textContent='No se pudo cargar Chart.js';return}
+ const labels=items.map(x=>new Date(x.medido_en).toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit',second:'2-digit'}));
+ const values=items.map(x=>num(x.flujo_l_min));
+ const data={labels,datasets:[{label:'Flujo (L/min)',data:values,borderColor:'#1fb6e8',backgroundColor:'rgba(31,182,232,.16)',borderWidth:2.5,fill:true,tension:.35,pointRadius:2.5,pointHoverRadius:5,pointBackgroundColor:'#0a6d9c'}]};
+ if(realtimeChart){realtimeChart.data=data;realtimeChart.update('none');return}
+ realtimeChart=new Chart(canvas,{type:'line',data,options:{responsive:true,maintainAspectRatio:false,animation:false,interaction:{intersect:false,mode:'index'},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${fmt(c.parsed.y,2)} L/min`}}},scales:{y:{beginAtZero:true,title:{display:true,text:'L/min'}},x:{grid:{display:false},ticks:{maxTicksLimit:6}}}}});
+}
 function renderChart(){const tz=tzOf(),now=Date.now(),hourly=sums('hora');let h='';
  for(let i=23;i>=0;i--){const st=new Date(now-i*3600e3),key=dayKey(st,tz)+' '+hourKey(st,tz);
   const val=hourly.filter(x=>dayKey(x.inicio,tz)+' '+hourKey(x.inicio,tz)===key).reduce((a,x)=>a+num(x.litros_totales),0);
@@ -368,10 +405,40 @@ function go(id){cur=id;$$('.view').forEach(v=>v.classList.toggle('on',v.id===id)
 
 /* ---------- acciones ---------- */
 async function act(fn,okMsg){try{await fn();await load(true);toast(okMsg)}catch(err){toast('No se pudo completar: '+err.message)}}
-function toggleGuard(){if(!model)return;const on=!model.house.modo_monitoreo;
- act(async()=>{const r=await rest('PATCH','casas',{params:{id:'eq.'+model.house.id},body:{modo_monitoreo:on}});if(!r.length)throw Error('tu cuenta no tiene permiso para cambiar el monitoreo')},on?'Monitoreo activado':'Monitoreo apagado')}
-function setValve(open){const v=mainValve();if(!v)return toast('No hay una válvula registrada');
- act(()=>rest('POST','comandos_valvula',{body:{casa_id:model.house.id,valvula_id:v.id,accion:open?'abrir':'cerrar',estado:'pendiente',motivo:'manual'}}),open?'Comando enviado: abriendo válvula':'Comando enviado: cerrando válvula')}
+async function toggleGuard(){
+ if(!model||$('#guard').disabled)return;
+ const guard=$('#guard'),on=!model.house.modo_monitoreo;
+ guard.disabled=true;
+ try{
+  const saved=await rest('POST','cambiar_monitoreo_hydrix',{
+   rpc:1,body:{p_casa_id:model.house.id,p_activo:on}
+  });
+  if(typeof saved!=='boolean')throw Error('La base de datos no confirmó el cambio');
+  model.house.modo_monitoreo=saved;
+  renderAll();
+  toast(saved?'Monitoreo activado':'Monitoreo apagado');
+  await load(true);
+ }catch(err){toast('No se pudo completar: '+err.message)}
+ finally{guard.disabled=false}
+}
+let valveBusy=false;
+async function setValve(open){
+ const v=model&&mainValve();
+ if(!v)return toast('No hay una válvula registrada');
+ if(valveBusy)return;
+ if(open&&v.estado!=='cerrada')return toast('Espera a confirmar que la válvula esté cerrada');
+ if(!open&&v.estado==='cerrada')return toast('La válvula ya está cerrada');
+ valveBusy=true;renderValve();
+ try{
+  const id=await rest('POST','solicitar_comando_valvula_hydrix',{
+   rpc:1,body:{p_valvula_id:v.id,p_accion:open?'abrir':'cerrar'}
+  });
+  if(!id)throw Error('La base de datos no confirmó el comando');
+  await load(true);
+  toast('Comando registrado; esperando confirmación de la válvula');
+ }catch(err){toast('No se pudo completar: '+err.message)}
+ finally{valveBusy=false;renderValve()}
+}
 function cancelClose(){const a=curAlert();if(!a)return;
  act(async()=>{const r=await rest('PATCH','alertas',{params:{id:'eq.'+a.id},body:{estado:'resuelta'}});if(!r.length)throw Error('sin permiso para cancelar la alerta')},'Cierre automático cancelado')}
 function goalModal(){if(!model)return;const val=p=>goal(p)||'';
