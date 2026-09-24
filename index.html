@@ -116,7 +116,7 @@ select,.field input,.field textarea{border:1px solid var(--line);border-radius:1
 <div class="head" style="margin-top:20px"><h2>Consumo <small>últimas 24 horas</small></h2></div><div class="chart" id="chart"></div><div class="axis" id="axis"></div></div></div>
 <div class="stack"><div class="card alert-card" id="alert"><div class="a-ico" id="aico"></div><h3 id="at"></h3><p id="ax"></p><div class="cd"><span id="al"></span><strong id="av"></strong></div>
 <div class="btns"><button class="btn ghost" id="adet" onclick="alertModal()">Ver detalle</button><button class="btn danger" id="aclose" onclick="setValve(false)">Cerrar ahora</button></div><button class="link" id="acancel" onclick="cancelClose()">Cancelar cierre automático</button></div>
-<div class="card"><div class="head"><h2>Válvula principal</h2></div><div data-valve></div></div>
+<div class="card"><div class="head"><h2>Válvula principal</h2><button class="btn ghost" id="servo-test" onclick="testServo()" disabled>Probar servo</button></div><div data-valve></div></div>
 <div class="card"><div class="head"><h2>Meta semanal</h2><button class="link" onclick="goalModal()">Editar</button></div><div class="ring-wrap"><div style="position:relative"><svg class="ring" viewBox="0 0 100 100"><circle class="bg" cx="50" cy="50" r="44"/><circle class="fg" id="rg" cx="50" cy="50" r="44"/></svg><div class="rp"><span><span id="gp">0</span>%</span></div></div>
 <div><strong id="w0">0</strong><small id="wnote"></small><div><small id="wrem"></small></div></div></div></div></div></div></section>
 
@@ -263,6 +263,7 @@ const valveSVG=`<svg class="pipe" viewBox="0 0 240 50" aria-hidden="true"><rect 
 function renderValve(){const v=mainValve(),st=v?.estado||'sin datos',open=st==='abierta',known=st==='abierta'||st==='cerrada';document.body.classList.toggle('vc',!open);
  $$('[data-vx]').forEach(e=>e.textContent=st[0].toUpperCase()+st.slice(1).replace('_',' '));
  $$('[data-valve]').forEach(e=>e.innerHTML=valveSVG+`<div class="vr"><div><h3>${esc(v?.nombre||'No hay válvula registrada')}</h3><p>Estado confirmado: ${esc(st)}${v?.ultima_confirmacion_en?' · '+esc(shortDate(v.ultima_confirmacion_en)):''}${v&&!known?' · espera confirmación para usar el interruptor':''}</p></div><button class="switch" role="switch" aria-label="${open?'Cerrar':'Abrir'} válvula principal" aria-checked="${open}" ${v&&known&&!valveBusy?'':'disabled'} onclick="setValve(${!open})"></button></div>`);
+ const test=$('#servo-test');if(test)test.disabled=!(v&&known&&!valveBusy);
  $('#vpill').className='pill '+(open?'ok':st==='cerrada'?'alert':'off');$('#vpill').textContent=st}
 function renderAlerts(){const a=curAlert();$('#alert').className='card alert-card '+(a?'alert':'ok');$('#aico').innerHTML=ic(a?'warn':'check');
  $('#at').textContent=a?(a.tipo==='desconexion'?'Sensor desconectado':'Alerta de flujo'):'Sin alertas activas';$('#ax').textContent=a?(a.descripcion||`${a.subtipo||a.tipo} · ${a.estado}`):'Todo en orden: no hay alertas registradas.';
@@ -318,8 +319,9 @@ async function toggleGuard(){if(!model||$('#guard').disabled)return;const g=$('#
  try{const s=await rest('POST','cambiar_monitoreo_hydrix',{rpc:1,body:{p_casa_id:model.house.id,p_activo:on}});if(typeof s!=='boolean')throw Error('La base de datos no confirmó el cambio');
   model.house.modo_monitoreo=s;renderAll();toast(s?'Monitoreo activado':'Monitoreo apagado');await load(true,true)}
  catch(err){toast('No se pudo completar: '+err.message)}finally{g.disabled=false}}
-async function setValve(open){const v=model&&mainValve();if(!v)return toast('No hay una válvula registrada');if(valveBusy)return;
- if(open&&v.estado!=='cerrada')return toast('Espera a confirmar que la válvula esté cerrada');if(!open&&v.estado==='cerrada')return toast('La válvula ya está cerrada');
+async function testServo(){await setValve(false,true)}
+async function setValve(open,force=false){const v=model&&mainValve();if(!v)return toast('No hay una válvula registrada');if(valveBusy)return;
+ if(open&&v.estado!=='cerrada')return toast('Espera a confirmar que la válvula esté cerrada');if(!open&&v.estado==='cerrada'&&!force)return toast('La válvula ya está cerrada');
  valveBusy=true;renderValve();
  try{await rest('POST','solicitar_comando_valvula_hydrix',{rpc:1,body:{p_valvula_id:v.id,p_accion:open?'abrir':'cerrar'}});
   await load(true,true);toast('Comando enviado; esperando confirmación de la válvula')}
