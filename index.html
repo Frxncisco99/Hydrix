@@ -1,630 +1,386 @@
 <!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Hydrix | Monitoreo de fugas</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Hydrix | Monitoreo de fugas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-:root{--ink:#0e2a3f;--muted:#66808f;--line:#e0edf2;--bg:#f3f9fb;--card:#fff;--deep:#0b4f7c;--blue:#22b2e6;--sky:#dff4fb;--ok:#1fa971;--warn:#dd9412;--bad:#e5484d;--r:18px;--ease:cubic-bezier(.2,.8,.2,1)}
-*{box-sizing:border-box}
-html,body{margin:0}
-body{background:var(--bg);color:var(--ink);font:14px/1.45 'DM Sans',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
-button,input,select{font:inherit;color:inherit}
-button{cursor:pointer;border:0;background:none}
-:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
-svg.ic{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
-h1,h2,h3{font-family:'Space Grotesk',sans-serif;margin:0;letter-spacing:-.02em}
+:root{--ink:#0c2434;--muted:#5f7b8b;--line:#dbe9ef;--bg:#eff6f9;--card:#fff;--soft:#e8f2f6;--acc:#0a6d9c;--deep:#0a4a72;--water:#1fb6e8;--ok:#14a06a;--warn:#d98e0f;--bad:#e0413f;--brass1:#f2d489;--brass2:#c39a45;--brass3:#8a6624;--r:20px;--ease:cubic-bezier(.2,.8,.2,1);--hero1:#0a3a5c;--hero2:#0e6b9c;
+box-sizing:border-box;padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--ink:#e3f0f6;--muted:#8aa5b5;--line:#1c3446;--bg:#08161f;--card:#0f2331;--soft:#14303f;--acc:#6fd0f5;--deep:#1a86bd}}
+:root[data-theme=dark]{--ink:#e3f0f6;--muted:#8aa5b5;--line:#1c3446;--bg:#08161f;--card:#0f2331;--soft:#14303f;--acc:#6fd0f5;--deep:#1a86bd}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 'DM Sans',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+button,input,select{font:inherit;color:inherit}button{cursor:pointer;border:0;background:none;padding:0}
+[hidden]{display:none!important}:focus-visible{outline:2px solid var(--water);outline-offset:3px}
+h1,h2,h3{font-family:'Bricolage Grotesque','DM Sans',sans-serif;margin:0;letter-spacing:-.02em}
+.ic{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.ok{--c:var(--ok)}.warn{--c:var(--warn)}.alert{--c:var(--bad)}.off{--c:#758795}
+.app{display:grid;grid-template-columns:230px 1fr;min-height:100dvh}
+.app.locked{filter:blur(6px);pointer-events:none;user-select:none}
+.side{background:var(--card);border-right:1px solid var(--line);padding:24px 14px;display:flex;flex-direction:column;position:sticky;top:0;height:100dvh}
+.brand{display:flex;align-items:center;gap:11px;margin:0 8px 28px}.brand b{font:800 20px 'Bricolage Grotesque';display:block}.brand small{color:var(--muted)}
+.logo{width:40px;height:40px;border-radius:13px;background:linear-gradient(140deg,#2cc0f0,#0b6ea6);color:#fff;display:grid;place-items:center}
+.nav{display:grid;gap:3px}.nav button{display:flex;align-items:center;gap:12px;padding:11px 13px;border-radius:12px;color:var(--muted);text-align:left;transition:background .2s,color .2s}
+.nav button:hover{background:var(--soft)}.nav .on{background:var(--soft);color:var(--acc);font-weight:600;box-shadow:inset 3px 0 0 var(--water)}
+.sb{margin-top:auto;padding:14px 8px 0;border-top:1px solid var(--line);font-size:12px;color:var(--muted)}
+.sb .r{display:flex;gap:14px;margin-top:8px}
+.link{color:var(--acc);font-weight:600;font-size:12px}
+.main{padding:28px 36px 56px;max-width:1240px;width:100%;margin:0 auto}
+.top{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:22px}.top h1{font-size:30px}.top p{margin:3px 0 0;color:var(--muted)}
+.tools{display:flex;gap:10px}
+.sq{position:relative;width:42px;height:42px;border-radius:13px;background:var(--card);border:1px solid var(--line);display:grid;place-items:center;transition:transform .2s var(--ease)}.sq:hover{transform:translateY(-2px)}
+.sq .dot{position:absolute;top:9px;right:10px;width:9px;height:9px;border-radius:50%;background:var(--bad);border:2px solid var(--card)}
+.view{display:none}.view.on{display:block}
+.cols{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(290px,1fr);gap:20px;align-items:start}.stack{display:grid;gap:20px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:22px}
+.head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px}.head h2{font-size:19px}.head small{color:var(--muted)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 16px;border-radius:12px;font-weight:600;font-size:13px;transition:transform .15s var(--ease),filter .2s}
+.btn:active{transform:scale(.96)}.btn:hover{filter:brightness(1.08)}.btn:disabled{opacity:.5;cursor:not-allowed}.btn .ic{width:16px;height:16px}
+.primary{background:var(--deep);color:#fff}.danger{background:var(--bad);color:#fff}.ghost{background:var(--card);border:1px solid var(--line)}
+.pill{display:inline-flex;align-items:center;gap:6px;border-radius:99px;padding:4px 10px;font-size:11px;font-weight:600;white-space:nowrap;color:var(--c,var(--muted));background:color-mix(in srgb,var(--c,var(--muted)) 14%,transparent)}
+.pill::before{content:'';width:6px;height:6px;border-radius:50%;background:currentColor}
 
-/* layout */
-.app{display:grid;grid-template-columns:232px 1fr;min-height:100vh}
-.sidebar{background:#fff;border-right:1px solid var(--line);padding:26px 16px;display:flex;flex-direction:column;position:sticky;top:0;height:100vh}
-.brand{display:flex;align-items:center;gap:11px;margin:0 8px 34px}
-.drop{width:40px;height:40px;border-radius:13px;background:linear-gradient(135deg,#27b9ec,#0f78ae);color:#fff;display:grid;place-items:center}
-.brand strong{font:700 19px 'Space Grotesk';letter-spacing:-.03em;display:block}
-.brand small{color:var(--muted);font-size:11px}
-.nav{display:grid;gap:4px;position:relative}
-.nav button{display:flex;align-items:center;gap:12px;padding:11px 13px;border-radius:11px;color:#567084;text-align:left;transition:background .2s,color .2s}
-.nav button:hover{background:#eef7fa}
-.nav button.active{background:var(--sky);color:#08739f;font-weight:600}
-.side-bottom{margin-top:auto;padding:16px 8px 0;border-top:1px solid var(--line);font-size:12px;color:var(--muted)}
-.online{display:flex;align-items:center;gap:8px;margin-top:6px;color:#168a5c;font-weight:600}
-.dot{width:8px;height:8px;border-radius:50%;background:currentColor;flex:none}
-.online .dot{animation:blink 2.4s ease-in-out infinite}
-@keyframes blink{50%{opacity:.35}}
+/* HERO: la llave */
+.hero{position:relative;isolation:isolate;overflow:hidden;border-radius:30px;padding:30px 40px;color:#fff;display:grid;grid-template-columns:minmax(260px,430px) 1fr;gap:36px;align-items:center;margin-bottom:20px;background:radial-gradient(110% 130% at 0 0,var(--hero2),transparent 60%),linear-gradient(135deg,var(--hero1),#0b527f)}
+.hero::before{content:'';position:absolute;inset:0;z-index:-1;background:radial-gradient(110% 130% at 0 0,#c0994e,transparent 60%),linear-gradient(135deg,#4a3d2a,#7b6543);opacity:0;transition:opacity 1.2s}
+[data-armed="0"] .hero::before{opacity:1}
+.guard{position:relative;display:block;width:min(300px,64vw);aspect-ratio:200/260;margin:0 auto;filter:drop-shadow(0 18px 34px rgba(76,201,242,.5));animation:glow 3.2s ease-in-out infinite;transition:transform .3s var(--ease),filter 1.6s;--shell:rgba(255,255,255,.13);--rim:rgba(255,255,255,.75)}
+@keyframes glow{50%{filter:drop-shadow(0 18px 48px rgba(76,201,242,.85))}}
+.guard:hover{transform:scale(1.04)}.guard:active{transform:scale(.96)}
+[data-armed="0"] .guard{animation:none;filter:drop-shadow(0 12px 22px rgba(0,0,0,.28)) saturate(.55);--shell:rgba(255,232,190,.1);--rim:#d8c196}
+.guard svg{width:100%;height:100%;display:block;overflow:visible}
+.shell{fill:var(--shell);transition:fill 1.6s}.rim{fill:none;stroke:var(--rim);stroke-width:4;transition:stroke 1.6s}
+.shine{fill:none;stroke:#fff;stroke-width:6;stroke-linecap:round;opacity:.4;transition:opacity 1.2s}[data-armed="0"] .shine{opacity:.08}
+.lvl{opacity:0;transition:transform 2.6s cubic-bezier(.55,0,.3,1),opacity .3s ease}[data-armed="0"] .lvl{transform:translateY(215px);opacity:0}
+.wv,.w2,.bb,.cracks{opacity:0!important;animation:none!important}
+.cracks path{stroke:#cdb48a;stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset .4s}
+[data-armed="0"] .cracks path{stroke-dashoffset:0;transition:stroke-dashoffset 1.5s ease calc(1.2s + var(--k)*.35s)}
+.dl{position:absolute;left:0;right:0;top:46%;display:grid;justify-items:center;gap:3px;pointer-events:none;text-shadow:0 2px 12px rgba(6,40,66,.55);transition:color 1.2s}
+[data-armed="0"] .dl{color:#f1dfba;text-shadow:none}.dl .ic{width:40px;height:40px;stroke-width:1.6}.dl b{font:800 20px 'Bricolage Grotesque'}.dl small{font-size:12px;opacity:.85}
+.hc h2{font-size:38px;line-height:1.05;margin:0 0 8px}.hc p{margin:0;opacity:.85;max-width:44ch}
+.hint{display:inline-flex;align-items:center;gap:8px;margin-top:14px;font-size:12px;padding:6px 12px;border-radius:99px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25)}
+.hm{display:grid;grid-template-columns:repeat(4,auto);justify-content:start;gap:8px 30px;margin:22px 0 14px;padding-top:18px;border-top:1px solid rgba(255,255,255,.2)}
+.hm span{display:block;font-size:12px;opacity:.7}.hm b{font:700 22px 'Bricolage Grotesque'}.hm small{font:500 12px 'DM Sans';opacity:.7;margin-left:3px}
+.pb{height:8px;border-radius:9px;background:rgba(255,255,255,.18);overflow:hidden;margin-bottom:8px}.pb i{display:block;height:100%;width:0;border-radius:9px;background:#8fe3ff;transition:width 1.2s var(--ease)}
+.hc .note{font-size:12px;opacity:.8}
 
-.main{padding:28px 36px 48px;max-width:1240px;width:100%;margin:0 auto}
-.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;gap:16px}
-.top h1{font-size:29px}
-.top p{margin:4px 0 0;color:var(--muted)}
-.profile{display:flex;align-items:center;gap:10px}
-.bell{position:relative;width:40px;height:40px;border-radius:12px;background:#fff;border:1px solid var(--line);display:grid;place-items:center;transition:transform .2s var(--ease)}
-.bell:hover{transform:rotate(-8deg)}
-.bell .badge{position:absolute;top:9px;right:10px;width:8px;height:8px;border-radius:50%;background:var(--bad);border:2px solid #fff}
-.avatar{width:40px;height:40px;border-radius:50%;background:var(--deep);color:#fff;display:grid;place-items:center;font-weight:700}
-.travel-banner{display:flex;align-items:center;justify-content:space-between;gap:20px;background:linear-gradient(110deg,#e5f8fb,#f7fbff);border:1px solid #bfe5ef;border-radius:20px;padding:16px 20px;margin-bottom:18px;box-shadow:0 10px 25px -22px rgba(14,80,120,.5)}.travel-copy{display:flex;align-items:center;gap:11px;min-width:0}.travel-icon{width:35px;height:35px;border-radius:11px;background:#cceff7;color:#08739f;display:grid;place-items:center;flex:none}.travel-copy strong{display:block;font:600 14px 'Space Grotesk'}.travel-copy span{display:block;color:var(--muted);font-size:11px;margin-top:2px}.travel-actions{display:flex;align-items:center;gap:12px;flex:none}.travel-toggle{width:118px;height:118px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;background:#20ae6f;color:#fff;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;box-shadow:0 10px 22px rgba(31,169,113,.24),inset 0 0 0 6px rgba(255,255,255,.18);transition:transform .2s var(--ease),background .25s,box-shadow .25s}.travel-toggle::before{content:'✓';width:34px;height:34px;border:2px solid rgba(255,255,255,.8);border-radius:50%;display:grid;place-items:center;font-size:20px;line-height:1}.travel-toggle:hover{transform:scale(1.04)}.travel-toggle:active{transform:scale(.97)}.travel-toggle.off{background:#e5484d;color:#fff;box-shadow:0 10px 22px rgba(229,72,77,.22),inset 0 0 0 6px rgba(255,255,255,.18)}.travel-toggle.off::before{content:'!';}.travel-toggle .dot{display:none}.travel-schedule{font-size:11px;padding:10px 12px;color:#08739f;background:#fff;border:1px solid #c5e5ee;border-radius:10px;font-weight:600}.travel-schedule:hover{background:#eef9fb}
-
-.view{display:none}
-.view.active{display:block;animation:viewIn .35s var(--ease)}
-@keyframes viewIn{from{opacity:0;transform:translateY(8px)}}
-.cols{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(290px,1fr);gap:20px;align-items:start}
-.stack{display:grid;gap:20px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:22px;box-shadow:0 1px 2px rgba(14,42,63,.04),0 14px 30px -20px rgba(14,80,120,.28)}
-.head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px}
-.head h2{font-size:18px}
-.head small{color:var(--muted);font:400 12px 'DM Sans'}
-.link{color:#0a86b8;font-weight:600;font-size:12px;padding:4px 2px;transition:opacity .2s}
-.link:hover{opacity:.7}
-
-/* buttons */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 15px;border-radius:11px;font-weight:600;font-size:13px;transition:transform .15s var(--ease),filter .2s,background .2s}
-.btn:active{transform:scale(.96)}
-.btn.primary{background:var(--deep);color:#fff}
-.btn.danger{background:var(--bad);color:#fff}
-.btn.soft{background:var(--sky);color:#08739f}
-.btn.ghost{background:#fff;border:1px solid var(--line)}
-.btn:hover{filter:brightness(1.06)}
-.btn svg.ic{width:16px;height:16px}
-
-/* hero (the one bold element) */
-.hero{position:relative;overflow:hidden;border-radius:24px;padding:30px 34px;color:#fff;background:radial-gradient(120% 140% at 100% 0,#1a8cc4 0,rgba(26,140,196,0) 55%),linear-gradient(135deg,#0a4670,#0d5f92);display:grid;grid-template-columns:1fr auto;gap:28px;align-items:center;margin-bottom:20px}
-.hero .lbl{opacity:.75;font-size:13px}
-.hero .big{font:700 68px/1 'Space Grotesk';letter-spacing:-.05em;margin:10px 0 6px}
-.hero .big small{font:500 20px 'DM Sans';opacity:.7;letter-spacing:0;margin-left:6px}
-.hero .sub{opacity:.85}
-.hero .sub b{color:#8fe3ff;font-weight:600}
-.hero-metrics{display:flex;gap:30px;margin-top:26px;padding-top:20px;border-top:1px solid rgba(255,255,255,.16);flex-wrap:wrap}
-.hero-metrics div{display:grid;gap:2px}
-.hero-metrics span{font-size:12px;opacity:.7}
-.hero-metrics strong{font:600 20px 'Space Grotesk';letter-spacing:-.02em}
-.hero-metrics strong small{font:500 12px 'DM Sans';opacity:.7;margin-left:3px}
-
-.tank{position:relative;width:128px;height:176px;border-radius:28px;border:2px solid rgba(255,255,255,.4);background:rgba(255,255,255,.07);overflow:hidden}
-.water{position:absolute;left:0;right:0;bottom:0;height:0;background:linear-gradient(#4cc9f2,#1c9ad0);transition:height 1.8s var(--ease)}
-.wave{position:absolute;left:0;top:-13px;width:200%;height:14px;animation:drift 5s linear infinite}
-.wave.b{top:-10px;opacity:.5;animation-duration:8s;animation-direction:reverse}
-.wave path{fill:#4cc9f2}
-@keyframes drift{to{transform:translateX(-50%)}}
-.tank-pct{position:absolute;inset:0;display:grid;place-items:center;font:700 28px 'Space Grotesk';text-shadow:0 2px 10px rgba(6,40,66,.35)}
-
-/* sensors */
-.sensor-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-.sensor{text-align:left;border:1px solid var(--line);border-radius:16px;padding:16px;background:#fff;display:grid;gap:12px;transition:transform .25s var(--ease),border-color .25s,box-shadow .25s}
-.sensor:hover{transform:translateY(-3px);border-color:color-mix(in srgb,var(--c) 45%,#fff);box-shadow:0 16px 28px -20px var(--c)}
-.sensor.alert{border-color:#f5c3c5;background:linear-gradient(#fff,#fff8f8)}
-.s-top{display:flex;justify-content:space-between;align-items:center}
-.s-ico{width:42px;height:42px;border-radius:13px;background:var(--t);color:var(--c);display:grid;place-items:center;transition:transform .3s var(--ease)}
-.sensor:hover .s-ico{transform:rotate(-8deg) scale(1.06)}
-.s-name{font:600 15px 'Space Grotesk'}
-.s-meta{font-size:12px;color:var(--muted)}
-.s-read{display:flex;align-items:flex-end;justify-content:space-between;gap:10px}
-.s-read strong{font:700 24px/1 'Space Grotesk';letter-spacing:-.03em}
-.s-read strong small{font:500 11px 'DM Sans';color:var(--muted);margin-left:3px;letter-spacing:0}
-.spark{width:92px;height:30px;overflow:visible}
-.spark path{fill:none;stroke:var(--c);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1;stroke-dashoffset:1;animation:draw 1.3s var(--ease) .2s forwards}
-@keyframes draw{to{stroke-dashoffset:0}}
-.pill{display:inline-flex;align-items:center;gap:6px;border-radius:99px;padding:4px 9px;font-size:11px;font-weight:600;white-space:nowrap}
-.pill.ok{color:#137a52;background:#e4f7ee}
-.pill.warn{color:#9a6300;background:#fff2d3}
-.pill.alert{color:#c02c33;background:#ffe6e6}
-.pill.off{color:#66788a;background:#edf1f4}
-.pill .dot{width:6px;height:6px}
-.pill.alert .dot{animation:blink 1.1s ease-in-out infinite}
-
-/* chart */
-.chart{display:flex;align-items:flex-end;gap:5px;height:170px;padding-top:8px}
-.bar{flex:1;height:0;border-radius:6px 6px 3px 3px;background:linear-gradient(#7fd6f3,#b8e8f7);position:relative;animation:grow .9s var(--ease) forwards;animation-delay:calc(var(--i)*25ms + .5s);transition:filter .2s}
-.bar.hot{background:linear-gradient(#f4b04c,#f9d79a)}
-.bar:hover{filter:saturate(1.4) brightness(.95)}
-.bar .tip{position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%) translateY(4px);background:var(--ink);color:#fff;font-size:11px;padding:3px 7px;border-radius:6px;opacity:0;pointer-events:none;white-space:nowrap;transition:.18s var(--ease)}
-.bar:hover .tip{opacity:1;transform:translateX(-50%)}
+/* sensores */
+.sensors{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.sensor{text-align:left;border:1px solid var(--line);border-radius:16px;padding:16px;background:var(--card);display:grid;gap:12px;transition:transform .2s var(--ease),border-color .2s;--c:var(--water)}
+.sensor:hover{transform:translateY(-3px);border-color:var(--c)}.sensor.alert{--c:var(--bad)}.sensor.off{--c:#758795}
+.s-top,.s-read{display:flex;justify-content:space-between;align-items:center}
+.s-ico{width:42px;height:42px;border-radius:13px;background:color-mix(in srgb,var(--c) 15%,transparent);color:var(--c);display:grid;place-items:center}
+.s-name{font:700 15px 'Bricolage Grotesque'}.s-meta{font-size:12px;color:var(--muted)}
+.s-read strong{font:800 26px/1 'Bricolage Grotesque'}.s-read small{font:500 11px 'DM Sans';color:var(--muted);margin-left:3px}
+.chart{display:flex;align-items:flex-end;gap:4px;height:170px;padding-top:24px}
+.bar{flex:1;height:0;border-radius:6px 6px 3px 3px;background:linear-gradient(#5cc6ee,#a8e2f5);position:relative;animation:grow .8s var(--ease) forwards;animation-delay:calc(var(--i)*20ms)}
 @keyframes grow{to{height:var(--h)}}
+.bar span{position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);font-size:11px;padding:3px 7px;border-radius:6px;opacity:0;pointer-events:none;white-space:nowrap;transition:.15s;z-index:2}.bar:hover span{opacity:1}
 .axis{display:flex;justify-content:space-between;margin-top:10px;color:var(--muted);font-size:11px}
-
-/* alert */
-.alert-card{background:#fff6f5;border-color:#ffd3cf}
-.alert-card .a-ico{width:42px;height:42px;border-radius:13px;background:#ffe1de;color:var(--bad);display:grid;place-items:center;margin-bottom:12px}
-.alert-card h3{font-size:19px}
-.alert-card p{margin:5px 0 14px;color:#8a5b5d;font-size:13px}
-.cd-row{display:flex;align-items:center;justify-content:space-between;background:#fff;border:1px solid #ffdcd8;border-radius:12px;padding:10px 14px;margin-bottom:14px}
-.cd-row span{color:#8a5b5d;font-size:12px}
-.cd-row strong{font:700 22px 'Space Grotesk';color:var(--bad);font-variant-numeric:tabular-nums}
-.alert-card .btns{display:flex;gap:8px}
-.alert-card .btns .btn{flex:1}
-.alert-card.calm{background:#f5fbf8;border-color:#cfeadd}
-.alert-card.calm .a-ico{background:#dcf4e8;color:var(--ok)}
-.alert-card.calm .cd-row strong{color:var(--ok)}
-
-/* valve */
-.pipe{width:100%;height:50px;display:block;margin:8px 0 14px}
-.pipe .body{fill:#e6f1f6}
-.pipe .flow{stroke:var(--blue);stroke-width:4;stroke-linecap:round;stroke-dasharray:2 12;animation:flow 1s linear infinite;transition:opacity .4s}
-.pipe .after{opacity:1}
-.closed .pipe .after{opacity:0}
-.pipe .wheel{transform-box:fill-box;transform-origin:center;transition:transform .6s var(--ease)}
-.closed .pipe .wheel{transform:rotate(90deg)}
-.pipe .hub{fill:#fff;stroke:var(--deep);stroke-width:2.5;transition:stroke .3s}
-.closed .pipe .hub{stroke:var(--bad)}
-@keyframes flow{to{stroke-dashoffset:-14}}
-.valve-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
-.valve-row h3{font-size:15px}
-.valve-row p{margin:2px 0 0;font-size:12px;color:var(--muted)}
+.alert-card{background:color-mix(in srgb,var(--c) 8%,var(--card));border-color:color-mix(in srgb,var(--c) 32%,var(--line))}
+.a-ico{width:42px;height:42px;border-radius:13px;background:color-mix(in srgb,var(--c) 16%,transparent);color:var(--c);display:grid;place-items:center;margin-bottom:12px}
+.alert-card h3{font-size:20px}.alert-card p{margin:5px 0 14px;color:var(--muted)}
+.cd{display:flex;align-items:center;justify-content:space-between;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 14px;margin-bottom:14px;color:var(--muted);font-size:12px}
+.cd strong{font:800 22px 'Bricolage Grotesque';color:var(--c);font-variant-numeric:tabular-nums}
+.btns{display:flex;gap:8px}.btns .btn{flex:1}.alert-card .link{margin-top:10px;padding:4px 0}
+.pipe{width:100%;max-width:380px;height:56px;display:block;margin:6px auto 14px}.pipe .body{fill:var(--soft)}
+.pipe .flow{stroke:var(--water);stroke-width:4;stroke-linecap:round;stroke-dasharray:2 12;animation:fl 1s linear infinite}@keyframes fl{to{stroke-dashoffset:-14}}
+.vc .pipe .after{opacity:0}.pipe .wheel{transform-box:fill-box;transform-origin:center;transition:transform .6s var(--ease)}.vc .pipe .wheel{transform:rotate(90deg)}
+.pipe .hub{fill:var(--card);stroke:var(--deep);stroke-width:2.5}.vc .pipe .hub{stroke:var(--bad)}.pipe .wheel path{stroke:var(--deep)}
+.vr{display:flex;align-items:center;justify-content:space-between;gap:12px}.vr h3{font-size:16px}.vr p{margin:2px 0 0;font-size:12px;color:var(--muted)}
 .switch{width:54px;height:30px;border-radius:99px;background:var(--ok);position:relative;transition:background .3s;flex:none}
-.switch::after{content:'';position:absolute;top:3px;left:27px;width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.2);transition:left .35s var(--ease)}
-.switch[aria-checked=false]{background:#b8c7d1}
-.switch[aria-checked=false]::after{left:3px}
-
-/* goal ring */
-.ring-wrap{display:flex;align-items:center;gap:20px}
-.ring{width:108px;height:108px;flex:none;transform:rotate(-90deg)}
-.ring circle{fill:none;stroke-width:9}
-.ring .bg{stroke:#e8f1f5}
-.ring .fg{stroke:url(#g);stroke-linecap:round;stroke-dasharray:276.46;stroke-dashoffset:276.46;transition:stroke-dashoffset 1.6s var(--ease) .4s}
-.ring-info strong{font:700 26px 'Space Grotesk';letter-spacing:-.03em}
-.ring-info strong small{font:500 12px 'DM Sans';color:var(--muted);margin-left:3px;letter-spacing:0}
-.ring-info div{color:var(--muted);font-size:12px;margin-top:2px}
-.ring-pct{position:absolute;inset:0;display:grid;place-items:center;font:700 18px 'Space Grotesk'}
-
-/* lists */
-.mini{display:grid;gap:0}
-.mini-item{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid #edf3f5}
-.mini-item:last-child{border:0}
-.mini-item span{color:var(--muted);font-size:13px}
-.mini-item strong{font-size:14px}
-.week{display:flex;align-items:flex-end;gap:10px;height:150px;margin:6px 0 4px;position:relative}
-.week .col{flex:1;display:grid;gap:6px;justify-items:center;align-items:end;height:100%}
-.week .b{width:100%;max-width:38px;border-radius:8px 8px 4px 4px;background:linear-gradient(#5cc6ee,#a9e3f6);height:0;animation:grow .9s var(--ease) forwards;animation-delay:calc(var(--i)*80ms)}
-.week .col.today .b{background:linear-gradient(#0f78ae,#2aa9dd)}
-.week .col span{font-size:11px;color:var(--muted)}
-.week-wrap{position:relative}
-.week-wrap::after{content:'meta diaria';position:absolute;left:0;right:0;bottom:calc(var(--goal) * 1px + 24px);border-top:1px dashed #b7cfdb;font-size:10px;color:var(--muted);text-align:right;padding-top:1px;pointer-events:none}
-
-/* calendar */
-.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
-.cal-grid .h{text-align:center;color:var(--muted);font-size:11px;padding:4px 0}
-.day{aspect-ratio:1.15;border-radius:10px;background:#eef8fb;font-size:12px;display:grid;place-items:center;transition:transform .2s var(--ease),background .2s;position:relative}
-.day:not(:disabled):hover{transform:scale(1.08)}
-.day.med{background:#fff0c9;color:#8a5a00}
-.day.high{background:#ffdad6;color:#b32a31}
-.day.sel{outline:2px solid var(--blue);outline-offset:2px;font-weight:700}
-.day:disabled{opacity:.35;cursor:default;background:#f4f8fa}
-.legend{display:flex;gap:16px;margin-top:16px;color:var(--muted);font-size:12px}
-.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
-
-/* timeline */
-.ev{display:grid;grid-template-columns:92px 1fr auto;gap:14px;align-items:center;padding:14px 0;border-bottom:1px solid #edf3f5;animation:viewIn .4s var(--ease) backwards;animation-delay:calc(var(--i)*45ms)}
-.ev:last-child{border:0}
-.ev small{color:var(--muted)}
-.ev strong{display:block}
-select.filter{border:1px solid var(--line);border-radius:10px;padding:9px 12px;background:#fff}
+.switch::after{content:'';position:absolute;top:3px;left:27px;width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.2);transition:left .3s var(--ease)}
+.switch[aria-checked=false]{background:#aebfca}.switch[aria-checked=false]::after{left:3px}.switch:disabled{opacity:.55;cursor:not-allowed}
+.ring-wrap{display:flex;align-items:center;gap:20px}.ring{width:108px;height:108px;transform:rotate(-90deg)}.ring circle{fill:none;stroke-width:9}
+.ring .bg{stroke:var(--line)}.ring .fg{stroke:url(#g);stroke-linecap:round;stroke-dasharray:276.46;stroke-dashoffset:276.46;transition:stroke-dashoffset 1.4s var(--ease)}
+.rp{position:absolute;inset:0;display:grid;place-items:center;font:800 18px 'Bricolage Grotesque'}
+.ring-wrap strong{font:800 26px 'Bricolage Grotesque'}.ring-wrap small{font:500 12px 'DM Sans';color:var(--muted)}
+.mini .mi{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}.mini .mi:last-child{border:0}.mi span{color:var(--muted)}
+.week{display:flex;align-items:flex-end;gap:10px;height:170px}
+.col{flex:1;display:grid;gap:6px;justify-items:center;align-items:end;height:100%}.col .b{width:100%;max-width:40px;border-radius:8px 8px 4px 4px;background:linear-gradient(#5cc6ee,#a9e3f6);height:0;animation:grow .8s var(--ease) forwards;animation-delay:calc(var(--i)*70ms)}
+.col.now .b{background:linear-gradient(#0f78ae,#2aa9dd)}.col span{font-size:11px;color:var(--muted)}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}.cal .h{text-align:center;color:var(--muted);font-size:11px}
+.day{aspect-ratio:1.15;border-radius:10px;background:var(--soft);font-size:12px}.day:not(:disabled):hover{outline:2px solid var(--water)}
+.day.med{background:color-mix(in srgb,var(--warn) 24%,var(--card))}.day.high{background:color-mix(in srgb,var(--bad) 26%,var(--card))}
+.day.sel{outline:2px solid var(--water);outline-offset:2px;font-weight:700}.day:disabled{opacity:.35;cursor:default}
+.legend{display:flex;gap:16px;margin-top:16px;color:var(--muted);font-size:12px;flex-wrap:wrap}.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px}
+.ev{display:grid;grid-template-columns:100px 1fr auto;gap:14px;align-items:center;padding:14px 0;border-bottom:1px solid var(--line)}.ev:last-child{border:0}.ev small{color:var(--muted);display:block}
 .empty{padding:26px 0;text-align:center;color:var(--muted)}
-
-/* valve page */
-.big-valve{display:grid;place-items:center;text-align:center;padding:14px 0 6px}
-.big-valve .pipe{max-width:380px;height:70px}
-.big-valve h3{font-size:24px;margin-top:6px}
-.big-valve p{color:var(--muted);margin:4px 0 20px}
-.cmd{display:flex;justify-content:space-between;gap:10px;padding:12px 0;border-bottom:1px solid #edf3f5;font-size:13px;animation:viewIn .4s var(--ease)}
-.cmd:last-child{border:0}
-.cmd span{color:var(--muted)}
-.cmd strong{color:var(--ok);font-size:12px}
-
-/* modal */
-.modal-wrap{position:fixed;inset:0;background:rgba(10,38,60,.4);backdrop-filter:blur(3px);display:none;align-items:center;justify-content:center;padding:20px;z-index:20}
-.modal-wrap.open{display:flex;animation:fade .25s}
-.modal{background:#fff;border-radius:22px;width:100%;max-width:600px;max-height:90vh;overflow:auto;padding:26px;box-shadow:0 30px 80px rgba(9,47,70,.3);animation:pop .4s var(--ease)}
-@keyframes fade{from{opacity:0}}
-@keyframes pop{from{opacity:0;transform:translateY(16px) scale(.97)}}
-.modal-head{display:flex;justify-content:space-between;gap:12px;margin-bottom:18px}
-.modal-head h2{font-size:22px}
-.modal-head p{margin:4px 0 0;color:var(--muted);font-size:13px}
-.close{width:34px;height:34px;border-radius:10px;background:#eef5f8;display:grid;place-items:center;flex:none}
-.form{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.field{display:grid;gap:6px}
-.field.full{grid-column:1/-1}
-.field label{font-size:12px;font-weight:600;color:#4f6b7d}
-.field input,.field select{border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:#fbfdfe;outline:none;transition:border-color .2s,box-shadow .2s}
-.field input:focus,.field select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(34,178,230,.15)}
-.form-title{grid-column:1/-1;font:600 14px 'Space Grotesk';color:var(--deep);padding-bottom:8px;border-bottom:1px solid var(--line);margin-top:4px}
+select,.field input{border:1px solid var(--line);border-radius:10px;padding:9px 12px;background:var(--card);width:100%}select{width:auto}
+.cmd{display:flex;justify-content:space-between;gap:10px;padding:12px 0;border-bottom:1px solid var(--line);font-size:13px}.cmd:last-child{border:0}.cmd span{color:var(--muted)}.cmd strong{font-size:12px}
+.mw{position:fixed;inset:0;background:rgba(6,28,44,.55);backdrop-filter:blur(3px);display:none;align-items:center;justify-content:center;padding:20px;z-index:20}.mw.open{display:flex}
+.modal{background:var(--card);border-radius:22px;width:100%;max-width:520px;max-height:90vh;overflow:auto;padding:26px;animation:pop .3s var(--ease)}@keyframes pop{from{opacity:0;transform:translateY(14px) scale(.97)}}
+.mh{display:flex;justify-content:space-between;gap:12px;margin-bottom:18px}.mh h2{font-size:22px}.mh p{margin:4px 0 0;color:var(--muted);font-size:13px}
+.close{width:34px;height:34px;border-radius:10px;background:var(--soft);display:grid;place-items:center;flex:none}
+.form{display:grid;grid-template-columns:1fr 1fr;gap:14px}.field{display:grid;gap:6px}.field.full{grid-column:1/-1}.field label{font-size:12px;font-weight:600;color:var(--muted)}
 .actions{grid-column:1/-1;display:flex;justify-content:flex-end;gap:10px;margin-top:8px}
-
-.toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,20px);background:#0f3b5a;color:#fff;border-radius:12px;padding:12px 18px;opacity:0;pointer-events:none;transition:.35s var(--ease);z-index:30;box-shadow:0 14px 34px rgba(9,47,70,.3);max-width:calc(100vw - 32px)}
-.toast.show{opacity:1;transform:translate(-50%,0)}
-
-/* single load sequence */
-.rise{opacity:0;transform:translateY(12px);animation:rise .7s var(--ease) forwards;animation-delay:calc(var(--d)*90ms)}
-@keyframes rise{to{opacity:1;transform:none}}
-
+.toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,20px);background:#0c3452;color:#fff;border-radius:12px;padding:12px 18px;opacity:0;pointer-events:none;transition:.3s var(--ease);z-index:60;max-width:calc(100vw - 32px)}.toast.show{opacity:1;transform:translate(-50%,0)}
+.gate{position:fixed;inset:0;z-index:40;display:grid;place-items:center;background:rgba(6,28,44,.78);padding:16px;overflow:auto}
+.gcard{display:grid;gap:12px;max-width:440px;width:100%;padding:28px;border-radius:22px;background:var(--card)}
+.gcard h2{font-size:26px}.gcard p{margin:0;color:var(--muted)}.gcard label{display:grid;gap:5px;font-weight:600;font-size:12px}
+.gcard input{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg)}.gcard .err{color:var(--bad);min-height:18px;font-size:13px}
+.gcard .btn{width:100%}.af{display:grid;gap:12px}.af .link{justify-self:center;padding:5px}
 @media(max-width:1000px){.cols{grid-template-columns:1fr}}
 @media(max-width:850px){.app{grid-template-columns:1fr}
-  .sidebar{position:fixed;top:auto;bottom:0;left:0;right:0;height:auto;z-index:15;flex-direction:row;padding:8px 10px calc(8px + env(safe-area-inset-bottom,0px));border-right:0;border-top:1px solid var(--line)}
-  .brand,.side-bottom{display:none}
-  .nav{display:flex;width:100%;justify-content:space-around}
-  .nav button{flex-direction:column;gap:3px;padding:7px 8px;font-size:10px;flex:1;align-items:center}
-  .main{padding:calc(20px + env(safe-area-inset-top,0px)) 16px 100px}
-  .top h1{font-size:24px}
-  .hero{grid-template-columns:1fr;padding:24px}
-  .hero .big{font-size:56px}
-  .tank{position:absolute;right:20px;top:20px;width:82px;height:112px;border-radius:20px}
-  .tank-pct{font-size:18px}
-  .hero-metrics{gap:22px}
-}
-@media(max-width:560px){.sensor-list{grid-template-columns:1fr}.form{grid-template-columns:1fr}.ev{grid-template-columns:70px 1fr}.ev .pill{grid-column:2;justify-self:start}.travel-banner{align-items:center;flex-direction:column;gap:14px;padding:16px}.travel-copy{width:100%;align-items:flex-start}.travel-copy span{white-space:normal}.travel-actions{width:100%;justify-content:center;flex-wrap:wrap}.travel-toggle{width:104px;height:104px}.travel-schedule{flex:1;min-width:150px;text-align:center}}
-@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}.rise,.bar,.week .b{opacity:1;transform:none}.bar{height:var(--h)}.week .b{height:var(--h)}.spark path{stroke-dashoffset:0}}
-</style>
-</head>
-<body>
-<div class="app">
-  <aside class="sidebar">
-    <div class="brand"><div class="drop"><i data-i="drop"></i></div><div><strong>Hydrix</strong><small>Hogar inteligente</small></div></div>
-    <nav class="nav" aria-label="Navegación principal">
-      <button class="active" data-view="inicio"><i data-i="home"></i><span>Inicio</span></button>
-      <button data-view="sensores"><i data-i="radio"></i><span>Sensores</span></button>
-      <button data-view="calendario"><i data-i="cal"></i><span>Calendario</span></button>
-      <button data-view="metas"><i data-i="target"></i><span>Metas</span></button>
-      <button data-view="historial"><i data-i="clock"></i><span>Historial</span></button>
-      <button data-view="valvula"><i data-i="sliders"></i><span>Válvula</span></button>
-    </nav>
-    <div class="side-bottom">Sistema protegido<div class="online"><i class="dot"></i>Servicios activos</div></div>
-  </aside>
+.side{position:fixed;top:auto;bottom:0;left:0;right:0;height:auto;z-index:15;flex-direction:row;padding:8px 10px calc(8px + env(safe-area-inset-bottom,0px));border:0;border-top:1px solid var(--line)}
+.brand,.sb{display:none}.nav{display:flex;width:100%;justify-content:space-around}.nav button{flex:1;flex-direction:column;align-items:center;gap:3px;padding:7px 2px;font-size:10px;box-shadow:none!important}
+.main{padding:20px 16px 110px}.top h1{font-size:25px}
+.hero{grid-template-columns:1fr;text-align:center;padding:24px 18px;gap:18px}.hc p{margin:auto}.hm{justify-content:center;grid-template-columns:repeat(2,auto)}.hc h2{font-size:30px}}
+@media(max-width:560px){.sensors,.form{grid-template-columns:1fr}.ev{grid-template-columns:1fr auto}.ev>small{grid-column:1/-1}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+</style></head>
+<body data-armed="0">
+<div class="app locked" id="app">
+<aside class="side"><div class="brand"><div class="logo" data-i="drop"></div><div><b>Hydrix</b><small>Hogar inteligente</small></div></div><nav class="nav" id="nav" aria-label="Navegación principal"></nav>
+<div class="sb"><span id="sb-status">Sin conexión</span><div class="r"><button id="reload" class="link">Actualizar</button><button id="logout" class="link">Salir</button></div></div></aside>
+<main class="main">
+<header class="top"><div><h1 id="pt"></h1><p id="ps"></p></div><div class="tools"><button class="sq" id="theme" aria-label="Cambiar tema"><span data-i="moon"></span></button><button class="sq" id="bell" aria-label="Alertas"><span data-i="bell"></span><span class="dot" id="bdg" hidden></span></button></div></header>
 
-  <main class="main">
-    <header class="top">
-      <div><h1 id="page-title">Hola, Luis Emilio</h1><p id="page-subtitle">Hay 1 alerta que necesita tu atención.</p></div>
-      <div class="profile"><button class="bell" id="bell" aria-label="Notificaciones"><i data-i="bell"></i><span class="badge" id="bell-badge"></span></button><div class="avatar">L</div></div>
-    </header>
-    <section class="travel-banner" aria-label="Protección de viaje">
-      <div class="travel-copy"><span class="travel-icon"><i data-i="lock"></i></span><div><strong id="travel-title">Protección de viaje activa</strong><span id="travel-copy">Todos los sensores están vigilando tu hogar.</span></div></div>
-      <div class="travel-actions"><button class="travel-schedule" data-open="travel-modal"><i data-i="cal"></i> Programar viaje</button><button class="travel-toggle" id="travel-toggle"><i class="dot"></i><span>Activa</span></button></div>
-    </section>
+<section id="inicio" class="view on">
+ <div class="hero">
+  <button class="guard" id="guard" onclick="toggleGuard()">
+   <svg viewBox="0 0 200 260" aria-hidden="true"><defs><path id="dp" d="M100 8C74 52 22 108 22 164a78 78 0 0 0 156 0C178 108 126 52 100 8Z"/><clipPath id="dc"><use href="#dp"/></clipPath><linearGradient id="wg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5cd0f5"/><stop offset="1" stop-color="#1a86c4"/></linearGradient></defs>
+    <use href="#dp" class="shell"/>
+    <g clip-path="url(#dc)"><g class="lvl"><path class="wv" d="M0 62q25-14 50 0t50 0 50 0 50 0 50 0 50 0 50 0 50 0V270H0Z"/><path class="wv w2" d="M0 62q25 14 50 0t50 0 50 0 50 0 50 0 50 0 50 0 50 0V270H0Z"/><circle class="bb" cx="70" cy="200" r="4"/><circle class="bb" cx="120" cy="170" r="3" style="animation-delay:-2s"/><circle class="bb" cx="95" cy="228" r="5" style="animation-delay:-4s"/></g>
+    <g class="cracks" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path style="--k:0" pathLength="1" d="M100 242 96 212 108 190 98 168 110 146"/><path style="--k:1" pathLength="1" d="M96 212 72 200 60 178"/><path style="--k:2" pathLength="1" d="M108 190 134 182 146 160"/><path style="--k:3" pathLength="1" d="M98 168 82 150"/></g></g>
+    <use href="#dp" class="rim"/><path class="shine" d="M50 150Q44 178 58 202"/></svg>
+   <span class="dl" id="dl"></span></button>
+  <div class="hc"><h2 id="gt"></h2><p id="gs"></p><span class="hint" id="hint"></span>
+   <div class="hm"><div><span>Consumo hoy</span><b><span id="cnt">0</span><small>L</small></b></div><div><span>Flujo ahora</span><b><span id="fl">—</span><small>L/min</small></b></div><div><span>Sensores en línea</span><b id="ms">—</b></div><div><span>Válvula</span><b data-vx>—</b></div></div>
+   <div class="pb"><i id="pb"></i></div><div class="note" id="daily-note">Sin meta diaria configurada</div></div>
+ </div>
+ <div class="cols">
+  <div class="stack">
+   <div class="card"><div class="head"><h2>Sensores</h2></div><div class="sensors" data-sensors></div></div>
+   <div class="card"><div class="head"><h2>Consumo <small>últimas 24 horas</small></h2><button class="link" onclick="go('calendario')">Ver calendario</button></div><div class="chart" id="chart"></div><div class="axis" id="axis"></div></div>
+  </div>
+  <div class="stack">
+   <div class="card alert-card" id="alert"><div class="a-ico" id="aico"></div><h3 id="at"></h3><p id="ax"></p>
+    <div class="cd"><span id="al"></span><strong id="av"></strong></div>
+    <div class="btns"><button class="btn ghost" id="adet" onclick="alertModal()">Ver detalle</button><button class="btn danger" id="aclose" onclick="setValve(false)">Cerrar ahora</button></div>
+    <button class="link" id="acancel" onclick="cancelClose()">Cancelar cierre automático</button></div>
+   <div class="card"><div class="head"><h2>Válvula principal</h2></div><div data-valve></div></div>
+   <div class="card"><div class="head"><h2>Meta semanal</h2><button class="link" onclick="goalModal()">Editar</button></div>
+    <div class="ring-wrap"><div style="position:relative"><svg class="ring" viewBox="0 0 100 100"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2ab6ea"/><stop offset="1" stop-color="#0d5f92"/></linearGradient></defs><circle class="bg" cx="50" cy="50" r="44"/><circle class="fg" id="rg" cx="50" cy="50" r="44"/></svg><div class="rp"><span><span id="gp">0</span>%</span></div></div>
+    <div><strong id="w0">0</strong><small id="wnote"></small><div><small id="wrem"></small></div></div></div></div>
+  </div>
+ </div>
+</section>
 
-    <!-- INICIO -->
-    <section id="inicio" class="view active">
-      <div class="hero rise" style="--d:0">
-        <div>
-          <div class="lbl">Consumo de hoy</div>
-          <div class="big"><span data-count="284">0</span><small>L</small></div>
-          <div class="sub">de <span data-goal-daily>500</span> L de tu meta diaria · quedan <b data-goal-left>216 L</b></div>
-          <div class="hero-metrics">
-            <div><span>Flujo ahora</span><strong><span id="flow-value">8.4</span><small>L/min</small></strong></div>
-            <div><span>Sensores activos</span><strong>3<small>de 4</small></strong></div>
-            <div><span>Válvula principal</span><strong data-valve-text>Abierta</strong></div>
-          </div>
-        </div>
-        <div class="tank" aria-hidden="true">
-          <div class="water" id="water">
-            <svg class="wave" viewBox="0 0 200 14" preserveAspectRatio="none"><path d="M0 7 Q25 0 50 7 T100 7 T150 7 T200 7 V14 H0Z"/></svg>
-            <svg class="wave b" viewBox="0 0 200 14" preserveAspectRatio="none"><path d="M0 7 Q25 14 50 7 T100 7 T150 7 T200 7 V14 H0Z"/></svg>
-          </div>
-          <div class="tank-pct"><span id="tank-pct">0</span>%</div>
-        </div>
-      </div>
-
-      <div class="cols">
-        <div class="stack">
-          <div class="card rise" style="--d:1">
-            <div class="head"><h2>Sensores</h2><button class="link" data-open="sensor-modal">+ Añadir sensor</button></div>
-            <div class="sensor-list" id="sensor-list"></div>
-          </div>
-          <div class="card rise" style="--d:2">
-            <div class="head"><h2>Consumo <small>últimas 24 horas</small></h2><button class="link" data-view-link="calendario">Ver calendario</button></div>
-            <div class="chart" id="chart"></div>
-            <div class="axis"><span>00:00</span><span>04:00</span><span>08:00</span><span>12:00</span><span>16:00</span><span>20:00</span></div>
-          </div>
-        </div>
-
-        <div class="stack">
-          <div class="card alert-card rise" style="--d:1" id="alert-card">
-            <div class="a-ico"><i data-i="warn"></i></div>
-            <h3 id="alert-title">Fuga detectada</h3>
-            <p id="alert-text">Flujo constante e inusual en <strong>Lavandería</strong>. Revisa la zona antes del cierre automático.</p>
-            <div class="cd-row"><span id="cd-label">Cierre automático en</span><strong data-cd>04:32</strong></div>
-            <div class="btns"><button class="btn ghost" data-open="alert-modal">Ver detalle</button><button class="btn danger" id="close-now"><i data-i="lock"></i>Cerrar ahora</button></div>
-          </div>
-
-          <div class="card rise" style="--d:2" id="valve-card">
-            <div class="valve-row"><div><h3>Válvula principal</h3><p data-valve-copy>Paso de agua activo</p></div><button class="switch" role="switch" aria-checked="true" aria-label="Válvula principal" data-valve-switch></button></div>
-            <div class="pipe-slot" data-pipe></div>
-            <button class="btn ghost" style="width:100%" id="cancel-close"><i data-i="check"></i>Cancelar cierre automático</button>
-          </div>
-
-          <div class="card rise" style="--d:3">
-            <div class="head"><h2>Meta semanal</h2><button class="link" data-open="goal-modal">Editar</button></div>
-            <div class="ring-wrap">
-              <div style="position:relative"><svg class="ring" viewBox="0 0 100 100"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2ab6ea"/><stop offset="1" stop-color="#0d5f92"/></linearGradient></defs><circle class="bg" cx="50" cy="50" r="44"/><circle class="fg" id="ring-fg" cx="50" cy="50" r="44"/></svg><div class="ring-pct"><span id="goal-pct">0</span>%</div></div>
-              <div class="ring-info"><strong>2,240<small>/ <span data-goal-weekly>3,500</span> L</small></strong><div>Restante: <span data-goal-week-left>1,260</span> L</div></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- SENSORES -->
-    <section id="sensores" class="view"><div class="card"><div class="head"><div><h2>Todos los sensores</h2><small>Cada punto de consumo en tiempo real.</small></div><button class="btn primary" data-open="sensor-modal"><i data-i="plus"></i>Añadir sensor</button></div><div class="sensor-list" id="sensor-list-full"></div></div></section>
-
-    <!-- CALENDARIO -->
-    <section id="calendario" class="view"><div class="cols">
-      <div class="card"><div class="head"><h2>Septiembre 2026</h2><small>Toca un día para ver el detalle</small></div><div class="cal-grid" id="cal-grid"></div>
-        <div class="legend"><span><i style="background:#eef8fb"></i>Normal</span><span><i style="background:#fff0c9"></i>Aviso</span><span><i style="background:#ffdad6"></i>Sobre la meta</span></div></div>
-      <div class="card"><div class="head"><div><h2 id="day-title">23 de septiembre</h2></div><span class="pill ok" id="day-pill"><i class="dot"></i>Dentro de meta</span></div>
-        <div class="mini"><div class="mini-item"><span>Consumo total</span><strong id="d-total">284 L</strong></div><div class="mini-item"><span>Promedio por hora</span><strong id="d-avg">11.8 L</strong></div><div class="mini-item"><span>Máximo registrado</span><strong id="d-max">42.6 L</strong></div><div class="mini-item"><span>Eventos</span><strong id="d-ev">2 avisos</strong></div></div></div>
-    </div></section>
-
-    <!-- METAS -->
-    <section id="metas" class="view"><div class="cols">
-      <div class="card"><div class="head"><h2>Consumo de la semana</h2><button class="btn soft" data-open="goal-modal"><i data-i="pencil"></i>Editar meta</button></div>
-        <div class="week-wrap" id="week-wrap"><div class="week" id="week"></div></div></div>
-      <div class="card"><div class="head"><h2>Configuración</h2></div><div class="mini">
-        <div class="mini-item"><span>Periodo</span><strong>Semanal</strong></div>
-        <div class="mini-item"><span>Litros por día</span><strong><span data-goal-daily>500</span> L</strong></div>
-        <div class="mini-item"><span>Litros por semana</span><strong><span data-goal-weekly>3,500</span> L</strong></div>
-        <div class="mini-item"><span>Al exceder la meta</span><strong id="goal-action" style="color:#9a6300">Solo aviso</strong></div></div></div>
-    </div></section>
-
-    <!-- HISTORIAL -->
-    <section id="historial" class="view"><div class="card"><div class="head"><div><h2>Historial de eventos</h2><small>Registro cronológico de actividad.</small></div>
-      <select class="filter" id="filter" aria-label="Filtrar eventos"><option value="todos">Todos los eventos</option><option value="fuga">Fugas</option><option value="valvula">Válvula</option><option value="aviso">Avisos</option></select></div>
-      <div id="events"></div></div></section>
-
-    <!-- VALVULA -->
-    <section id="valvula" class="view"><div class="cols">
-      <div class="card" id="valve-big"><div class="head"><h2>Estado de la válvula</h2><span class="pill ok" id="valve-pill"><i class="dot"></i>Abierta</span></div>
-        <div class="big-valve"><div class="pipe-slot" data-pipe style="width:100%;max-width:380px"></div><h3 data-valve-title>Válvula abierta</h3><p data-valve-sub>El agua fluye con normalidad.</p>
-          <button class="switch" role="switch" aria-checked="true" aria-label="Válvula principal" data-valve-switch></button></div></div>
-      <div class="card"><div class="head"><h2>Últimos comandos</h2></div><div id="cmds"></div></div>
-    </div></section>
-  </main>
-</div>
-
-<!-- Modales -->
-<div class="modal-wrap" id="travel-modal"><div class="modal">
-  <div class="modal-head"><div><h2>Programar protección</h2><p>Activa todos los sistemas durante tu viaje.</p></div><button class="close" data-close="travel-modal" aria-label="Cerrar"><i data-i="x"></i></button></div>
-  <form id="travel-form" class="form">
-    <div class="field"><label>Salida</label><input name="start" type="date" required></div>
-    <div class="field"><label>Regreso</label><input name="end" type="date" required></div>
-    <div class="field"><label>Activar a las</label><input name="startTime" type="time" value="08:00" required></div>
-    <div class="field"><label>Desactivar a las</label><input name="endTime" type="time" value="20:00" required></div>
-    <div class="field full"><label>Durante el viaje</label><select name="mode"><option value="protegido">Vigilar fugas y cerrar automáticamente</option><option value="aviso">Vigilar fugas y solo enviar avisos</option></select></div>
-    <div class="actions"><button type="button" class="btn ghost" data-close="travel-modal">Cancelar</button><button class="btn primary" type="submit"><i data-i="cal"></i>Guardar programación</button></div>
-  </form>
-</div></div>
-<div class="modal-wrap" id="sensor-modal"><div class="modal">
-  <div class="modal-head"><div><h2>Añadir sensor</h2><p>Configura un nuevo punto de monitoreo.</p></div><button class="close" data-close="sensor-modal" aria-label="Cerrar"><i data-i="x"></i></button></div>
-  <form id="sensor-form" class="form">
-    <div class="field full"><label>Nombre del sensor</label><input name="name" placeholder="Ej. Boiler" required></div>
-    <div class="field"><label>Tipo de tubería</label><select name="pipe"><option>agua_fria</option><option>agua_caliente</option><option>general</option></select></div>
-    <div class="field"><label>Material</label><select name="material"><option>cobre</option><option>pvc</option><option>pex</option><option>acero_galvanizado</option><option>cpvc</option></select></div>
-    <div class="field"><label>Diámetro interno (mm)</label><input name="diameter" type="number" step=".1" value="12.7"></div>
-    <div class="field"><label>Longitud del tramo (m)</label><input name="length" type="number" step=".1" placeholder="8.5"></div>
-    <div class="field"><label>Distancia a válvula (m)</label><input name="distance" type="number" step=".1" placeholder="12.0"></div>
-    <div class="field"><label>Altura relativa (m)</label><input name="height" type="number" step=".1" placeholder="2.5"></div>
-    <div class="form-title">Meta de consumo</div>
-    <div class="field"><label>Litros por día</label><input name="daily" type="number" value="500"></div>
-    <div class="field"><label>Litros por semana</label><input name="weekly" type="number" value="3500"></div>
-    <div class="field"><label>Periodo</label><select name="period"><option>diario</option><option selected>semanal</option><option>mensual</option></select></div>
-    <div class="field"><label>Acción al exceder meta</label><select name="action"><option>solo_aviso</option><option>cerrar_automatico</option></select></div>
-    <div class="actions"><button type="button" class="btn ghost" data-close="sensor-modal">Cancelar</button><button class="btn primary" type="submit"><i data-i="plus"></i>Guardar sensor</button></div>
-  </form></div></div>
-
-<div class="modal-wrap" id="alert-modal"><div class="modal">
-  <div class="modal-head"><div><h2 style="color:var(--bad)">Fuga detectada</h2><p>Revisa la zona antes de que termine la cuenta regresiva.</p></div><button class="close" data-close="alert-modal" aria-label="Cerrar"><i data-i="x"></i></button></div>
-  <div class="mini"><div class="mini-item"><span>Sensor afectado</span><strong>Lavandería</strong></div><div class="mini-item"><span>Flujo detectado</span><strong>26.4 L/min</strong></div><div class="mini-item"><span>Distancia estimada</span><strong>8.6 m</strong></div><div class="mini-item"><span>Confianza del cálculo</span><strong>94%</strong></div><div class="mini-item"><span>Cierre automático en</span><strong style="color:var(--bad)" data-cd>04:32</strong></div></div>
-  <div class="actions" style="display:flex;justify-content:flex-end;gap:10px;margin-top:20px"><button class="btn ghost" id="modal-cancel">Cancelar cierre</button><button class="btn danger" id="modal-close-now"><i data-i="lock"></i>Cerrar ahora</button></div>
-</div></div>
-
-<div class="modal-wrap" id="goal-modal"><div class="modal">
-  <div class="modal-head"><div><h2>Editar meta</h2><p>Define cuánta agua quieres consumir.</p></div><button class="close" data-close="goal-modal" aria-label="Cerrar"><i data-i="x"></i></button></div>
-  <form id="goal-form" class="form">
-    <div class="field"><label>Litros por día</label><input name="daily" type="number" min="1" value="500" required></div>
-    <div class="field"><label>Litros por semana</label><input name="weekly" type="number" min="1" value="3500" required></div>
-    <div class="field full"><label>Al exceder la meta</label><select name="action"><option value="solo_aviso">Solo aviso</option><option value="cerrar_automatico">Cerrar automáticamente</option></select></div>
-    <div class="actions"><button type="button" class="btn ghost" data-close="goal-modal">Cancelar</button><button class="btn primary" type="submit">Guardar meta</button></div>
-  </form></div></div>
-
+<section id="sensores" class="view"><div class="card"><div class="head"><div><h2>Todos los sensores</h2><small>Últimas lecturas registradas.</small></div></div><div class="sensors" data-sensors></div></div></section>
+<section id="calendario" class="view"><div class="cols">
+ <div class="card"><div class="head"><h2 id="calt"></h2><small>Toca un día para ver el detalle</small></div><div class="cal" id="cal"></div><div class="legend"><span><i style="background:var(--soft)"></i>Normal</span><span><i style="background:color-mix(in srgb,var(--warn) 24%,var(--card))"></i>Cerca de la meta</span><span><i style="background:color-mix(in srgb,var(--bad) 26%,var(--card))"></i>Sobre la meta</span></div></div>
+ <div class="card"><div class="head"><h2 id="dtl"></h2><span class="pill ok" id="dpl"></span></div><div class="mini"><div class="mi"><span>Consumo total</span><strong id="dt"></strong></div><div class="mi"><span>Promedio por hora</span><strong id="da"></strong></div><div class="mi"><span>Flujo máximo</span><strong id="dm"></strong></div><div class="mi"><span>Eventos</span><strong id="de"></strong></div></div></div>
+</div></section>
+<section id="metas" class="view"><div class="cols">
+ <div class="card"><div class="head"><h2>Consumo de la semana</h2><button class="btn ghost" onclick="goalModal()">Editar metas</button></div><div class="week" id="week"></div></div>
+ <div class="card"><div class="head"><h2>Configuración</h2></div><div class="mini"><div class="mi"><span>Litros por día</span><strong id="gd">Sin meta</strong></div><div class="mi"><span>Litros por semana</span><strong id="gw">Sin meta</strong></div><div class="mi"><span>Litros por mes</span><strong id="gm">Sin meta</strong></div></div></div>
+</div></section>
+<section id="historial" class="view"><div class="card"><div class="head"><div><h2>Historial de eventos</h2><small>Registro cronológico de actividad.</small></div><select id="filter" aria-label="Filtrar eventos"></select></div><div id="events"></div></div></section>
+<section id="valvula" class="view"><div class="cols">
+ <div class="card"><div class="head"><h2>Estado de la válvula</h2><span class="pill" id="vpill"></span></div><div data-valve></div></div>
+ <div class="card"><div class="head"><h2>Últimos comandos</h2></div><div id="cmds"></div></div>
+</div></section>
+</main></div>
+<div class="mw" id="mw"><div class="modal" id="md"></div></div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
+<div class="gate" id="gate"><div class="gcard">
+ <div class="logo" data-i="drop"></div><h2 id="gtitle">Iniciar sesión</h2><p id="gdesc"></p>
+ <form id="f-login" class="af"><label>Correo<input id="l-email" type="email" required autocomplete="username"></label><label>Contraseña<input id="l-pass" type="password" required autocomplete="current-password"></label><button class="btn primary" type="submit">Entrar</button><button type="button" class="link" data-mode="register">Crear mi cuenta</button></form>
+ <form id="f-reg" class="af" hidden><label>Correo<input id="r-email" type="email" required autocomplete="email"></label><label>Contraseña nueva<input id="r-pass" type="password" minlength="8" required autocomplete="new-password"></label><label>Confirmar contraseña<input id="r-conf" type="password" minlength="8" required autocomplete="new-password"></label><button class="btn primary" type="submit">Crear cuenta</button><button type="button" class="link" data-mode="login">Ya tengo cuenta</button></form>
+ <form id="f-act" class="af" hidden><label>Código de instalación<input id="a-code" type="text" required autocomplete="off" spellcheck="false" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"></label><label>Tu nombre<input id="a-name" type="text" minlength="2" maxlength="80" required autocomplete="name"></label><button class="btn primary" type="submit">Activar mi instalación</button><button type="button" class="link" id="a-out">Salir de esta cuenta</button></form>
+ <p class="err" id="gerr" role="alert"></p>
+</div></div>
+
 <script>
-/* ---------- Iconos (SVG en línea, sin dependencias) ---------- */
-const P={
-drop:'<path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/>',
-home:'<rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/>',
-radio:'<circle cx="12" cy="12" r="2"/><path d="M4.9 19.1a10 10 0 0 1 0-14.2M7.8 16.2a6 6 0 0 1 0-8.4M16.2 7.8a6 6 0 0 1 0 8.4M19.1 4.9a10 10 0 0 1 0 14.2"/>',
-cal:'<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',
-target:'<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>',
-clock:'<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>',
-sliders:'<path d="M21 4h-7M10 4H3M21 12h-9M8 12H3M21 20h-5M12 20H3M14 2v4M8 10v4M16 18v4"/>',
-bell:'<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.94 1.94 0 0 0 3.4 0"/>',
-warn:'<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3M12 9v4M12 17h.01"/>',
-plus:'<path d="M5 12h14M12 5v14"/>',
-x:'<path d="M18 6 6 18M6 6l12 12"/>',
-lock:'<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
-check:'<circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>',
-pencil:'<path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>',
-faucet:'<path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/>',
-bath:'<path d="M9 6 6.5 3.5a1.5 1.5 0 0 0-1-.5C4.7 3 4 3.7 4 4.5V17a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5M10 5 8 7M2 12h20M7 19v2M17 19v2"/>',
-wash:'<path d="M3 6h3M17 6h.01"/><rect width="18" height="20" x="3" y="2" rx="2"/><circle cx="12" cy="13" r="5"/><path d="M12 18a2.5 2.5 0 0 0 0-5 2.5 2.5 0 0 1 0-5"/>',
-sprout:'<path d="M7 20h10M10 20c5.5-2.5.8-6.4 3-10M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8zM14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z"/>',
-flame:'<path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>',
-arrow:'<path d="M7 7h10v10M7 17 17 7"/>'
-};
-function hydrate(root=document){root.querySelectorAll('i[data-i]').forEach(el=>{const s=document.createElementNS('http://www.w3.org/2000/svg','svg');s.setAttribute('viewBox','0 0 24 24');s.setAttribute('class','ic');s.setAttribute('aria-hidden','true');s.innerHTML=P[el.dataset.i]||'';el.replaceWith(s)})}
+const P={drop:'<path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/>',home:'<path d="M3 11 12 3l9 8v10H3z"/><path d="M9 21v-7h6v7"/>',radio:'<circle cx="12" cy="12" r="2"/><path d="M4.9 19.1a10 10 0 0 1 0-14.2M7.8 16.2a6 6 0 0 0 0-8.4M16.2 7.8a6 6 0 0 1 0 8.4M19.1 4.9a10 10 0 0 1 0 14.2"/>',cal:'<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',target:'<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>',clock:'<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>',sliders:'<path d="M21 4h-7M10 4H3M21 12h-9M8 12H3M21 20h-5M12 20H3M14 2v4M8 10v4M16 18v4"/>',bell:'<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.94 1.94 0 0 0 3.4 0"/>',warn:'<path d="m21.7 18-8-14a2 2 0 0 0-3.5 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.7-3M12 9v4M12 17h.01"/>',check:'<path d="M20 6 9 17l-5-5"/>',x:'<path d="M18 6 6 18M6 6l12 12"/>',lock:'<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',moon:'<path d="M20.5 15.5A8.5 8.5 0 0 1 8.5 3.5a8.5 8.5 0 1 0 12 12z"/>'};
+const ic=k=>`<svg class="ic" viewBox="0 0 24 24" aria-hidden="true">${P[k]||''}</svg>`;
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
-const fmt=n=>Number(n).toLocaleString('en-US');
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt=(v,d=0)=>Number(v||0).toLocaleString('es-MX',{minimumFractionDigits:d,maximumFractionDigits:d});
+const num=v=>Number(v)||0;
+$$('[data-i]').forEach(e=>e.innerHTML=ic(e.dataset.i));
+let theme=localStorage.getItem('hydrix-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+const applyTheme=()=>{document.documentElement.dataset.theme=theme;$('#theme').innerHTML=ic(theme==='dark'?'sun':'moon')};applyTheme();
+$('#theme').onclick=()=>{theme=theme==='dark'?'light':'dark';localStorage.setItem('hydrix-theme',theme);applyTheme()};
+function toast(t){const e=$('#toast');e.textContent=t;e.classList.add('show');clearTimeout(toast.h);toast.h=setTimeout(()=>e.classList.remove('show'),4200)}
+const mw=$('#mw'),md=$('#md'),closeM=()=>mw.classList.remove('open');
+function modal(t,s,body){md.innerHTML=`<div class="mh"><div><h2>${esc(t)}</h2><p>${esc(s)}</p></div><button class="close" onclick="closeM()" aria-label="Cerrar">${ic('x')}</button></div>${body}`;mw.classList.add('open')}
+mw.onclick=e=>e.target===mw&&closeM();addEventListener('keydown',e=>e.key==='Escape'&&closeM());
+const rows=r=>`<div class="mini">${r.map(x=>`<div class="mi"><span>${esc(x[0])}</span><strong>${esc(x[1])}</strong></div>`).join('')}</div>`;
 
-/* ---------- Estado ---------- */
-const state={valve:true,cd:272,cdOn:true,leak:true,alarmArmed:true,travelSchedule:null,goal:{daily:500,weekly:3500,action:'solo_aviso'},consumedToday:284,consumedWeek:2240};
-const sensors=[
- {name:'Cocina',flow:'4.8',st:'ok',meta:'Hace 2 min',icon:'faucet',c:'#129ecf',t:'#e2f5fb',s:[3,4,3,5,4,6,5,4.8]},
- {name:'Baño',flow:'12.6',st:'warn',meta:'Humedad elevada · hace 5 min',icon:'bath',c:'#d58a00',t:'#fff1cf',s:[4,5,8,11,9,13,12,12.6]},
- {name:'Lavandería',flow:'26.4',st:'alert',meta:'Flujo constante · hace 1 min',icon:'wash',c:'#df4148',t:'#ffe3e1',s:[2,2,3,10,18,24,26,26.4]},
- {name:'Jardín',flow:'--',st:'off',meta:'Sin datos · hace 3 h',icon:'sprout',c:'#718392',t:'#edf2f5',s:[0,0,0,0,0,0,0,0]}
-];
-const stText={ok:'Sin fuga',warn:'Advertencia',alert:'Fuga detectada',off:'Desconectado'};
-const events=[
- {t:'Hoy, 14:32',title:'Fuga detectada',sub:'Lavandería · 26.4 L/min · 94% de confianza',type:'fuga',cls:'alert',label:'Alerta'},
- {t:'Hoy, 12:10',title:'Válvula abierta',sub:'Sistema principal · Comando ejecutado',type:'valvula',cls:'ok',label:'Correcto'},
- {t:'Hoy, 12:08',title:'Aviso de consumo',sub:'Cocina · 14.2 L/min · Dentro de rango',type:'aviso',cls:'warn',label:'Aviso'},
- {t:'Ayer, 18:45',title:'Válvula abierta',sub:'Sistema principal · Comando ejecutado',type:'valvula',cls:'ok',label:'Correcto'},
- {t:'Ayer, 09:12',title:'Sensor desconectado',sub:'Jardín · Sin datos recibidos',type:'aviso',cls:'off',label:'Sin datos'},
- {t:'Lun, 08:30',title:'Válvula cerrada',sub:'Sistema principal · Comando ejecutado',type:'valvula',cls:'ok',label:'Correcto'}
-];
+/* ---------- Supabase ---------- */
+const config={url:'https://neuifbdkjdumudhgxupv.supabase.co',key:'sb_publishable_w8Bi8TvmnXynCCUEf3tJFQ_j9dy0GlR'};
+let session=null,model=null,busy=false,cur='inicio',selectedDay=null,loadedOnce=false;
+try{session=JSON.parse(sessionStorage.getItem('hydrix_session')||'null')}catch{}
+const saveSession=v=>{session={access:v.access_token,refresh:v.refresh_token,expiresAt:Date.now()+v.expires_in*1000,user:v.user};sessionStorage.setItem('hydrix_session',JSON.stringify(session))};
+async function auth(path,body){const r=await fetch(config.url+'/auth/v1/'+path,{method:'POST',headers:{'Content-Type':'application/json',apikey:config.key},body:JSON.stringify(body)});const j=await r.json().catch(()=>({}));if(!r.ok)throw Error(j.msg||j.error_description||j.message||'Error de autenticación');return j}
+async function token(){if(!session)throw Error('Inicia sesión');if(Date.now()<session.expiresAt-60000)return session.access;
+ const v=await auth('token?grant_type=refresh_token',{refresh_token:session.refresh});saveSession(v);return session.access}
+async function rest(method,table,{params={},body,rpc}={}){const t=await token(),url=new URL(config.url+'/rest/v1/'+(rpc?'rpc/':'')+table);
+ Object.entries(params).forEach(([k,v])=>url.searchParams.set(k,String(v)));
+ const headers={apikey:config.key,Authorization:'Bearer '+t,Accept:'application/json'};
+ if(body!==undefined){headers['Content-Type']='application/json';if(!rpc)headers.Prefer='return=representation'}
+ const r=await fetch(url,{method,headers,body:body===undefined?undefined:JSON.stringify(body)});
+ const j=await r.json().catch(()=>null);if(!r.ok)throw Error(j?.message||`${table}: ${r.statusText}`);return j}
+const query=(t,p)=>rest('GET',t,{params:p});
 
-/* ---------- Utilidades de animación ---------- */
-function countUp(el,to,dur=1400,dec=0){const t0=performance.now();(function f(n){const p=Math.min(1,(n-t0)/dur),e=1-Math.pow(1-p,4);el.textContent=(to*e).toFixed(dec);if(p<1)requestAnimationFrame(f)})(t0)}
-function tween(el,to,dur=900){const from=parseFloat(el.textContent)||0,t0=performance.now();(function f(n){const p=Math.min(1,(n-t0)/dur),e=1-Math.pow(1-p,3);el.textContent=(from+(to-from)*e).toFixed(1);if(p<1)requestAnimationFrame(f)})(t0)}
-function toast(t){const e=$('#toast');e.textContent=t;e.classList.add('show');clearTimeout(toast.h);toast.h=setTimeout(()=>e.classList.remove('show'),2800)}
+function showMode(mode,msg=''){const T={login:['Iniciar sesión','Accede al hogar donde ya están instalados tus sensores.'],register:['Crear cuenta','Regístrate con tu correo; después usarás el código del instalador.'],activate:['Activar instalación','Vincula a tu cuenta los sensores instalados en tu hogar.']}[mode];
+ $('#gtitle').textContent=T[0];$('#gdesc').textContent=T[1];$('#f-login').hidden=mode!=='login';$('#f-reg').hidden=mode!=='register';$('#f-act').hidden=mode!=='activate';
+ $('#gerr').textContent=msg;$('#gate').hidden=false;$('#app').classList.add('locked')}
+const unlock=()=>{$('#gate').hidden=true;$('#app').classList.remove('locked');$('#gerr').textContent=''};
+$$('[data-mode]').forEach(b=>b.onclick=()=>showMode(b.dataset.mode));
+$('#f-login').onsubmit=async e=>{e.preventDefault();const b=e.target.querySelector('[type=submit]');b.disabled=true;$('#gerr').textContent='Conectando…';
+ try{saveSession(await auth('token?grant_type=password',{email:$('#l-email').value.trim(),password:$('#l-pass').value}));$('#l-pass').value='';if(await load(true))unlock()}
+ catch(err){showMode('login',err.message);session=null;sessionStorage.removeItem('hydrix_session')}finally{b.disabled=false}};
+$('#f-reg').onsubmit=async e=>{e.preventDefault();const b=e.target.querySelector('[type=submit]');
+ if($('#r-pass').value!==$('#r-conf').value){$('#gerr').textContent='Las contraseñas no coinciden';return}
+ b.disabled=true;$('#gerr').textContent='Creando cuenta…';
+ try{const v=await auth('signup',{email:$('#r-email').value.trim(),password:$('#r-pass').value});$('#r-pass').value=$('#r-conf').value='';
+  if(v.access_token){saveSession(v);showMode('activate')}else showMode('login','Revisa tu correo, confirma la cuenta e inicia sesión para activar tu instalación.')}
+ catch(err){$('#gerr').textContent=err.message}finally{b.disabled=false}};
+$('#f-act').onsubmit=async e=>{e.preventDefault();const b=e.target.querySelector('[type=submit]');b.disabled=true;$('#gerr').textContent='Activando…';
+ try{await rest('POST','activar_instalacion',{rpc:1,body:{p_codigo:$('#a-code').value.trim(),p_nombre:$('#a-name').value.trim(),p_hogar:null,p_meta_diaria:null,p_meta_semanal:null,p_meta_mensual:null}});
+  $('#a-code').value='';if(await load(true)){unlock();toast('Tu hogar y tus sensores ya están vinculados')}}
+ catch(err){$('#gerr').textContent=err.message}finally{b.disabled=false}};
+function logout(){session=null;model=null;loadedOnce=false;sessionStorage.removeItem('hydrix_session');showMode('login');$('#sb-status').textContent='Sesión cerrada'}
+$('#a-out').onclick=$('#logout').onclick=logout;$('#reload').onclick=()=>load().catch(()=>{});
 
-/* ---------- Protección de viaje ---------- */
-function renderTravel(){const active=state.alarmArmed;const toggle=$('#travel-toggle');toggle.classList.toggle('off',!active);toggle.innerHTML=`<span>${active?'ALARMA ACTIVA':'ACTIVAR ALARMA'}</span>`;toggle.setAttribute('aria-label',active?'Desactivar alarma de viaje':'Activar alarma de viaje');$('#travel-title').textContent=active?'Protección de viaje activa':'Protección de viaje inactiva';$('#travel-copy').textContent=state.travelSchedule?state.travelSchedule:'Todos los sensores están vigilando tu hogar.'}
-function toggleTravel(){state.alarmArmed=!state.alarmArmed;renderTravel();toast(state.alarmArmed?'Protección activada: todos los sistemas están vigilando':'Protección desactivada: los cierres automáticos están en pausa')}
-function formatTravelDate(value){if(!value)return '';return new Date(value+'T12:00:00').toLocaleDateString('es-MX',{day:'numeric',month:'short'})}
+const dayKey=(v,tz)=>new Intl.DateTimeFormat('sv-SE',{timeZone:tz,year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date(v));
+const hourKey=(v,tz)=>new Intl.DateTimeFormat('es-MX',{timeZone:tz,hour:'2-digit',hour12:false}).format(new Date(v)).padStart(2,'0');
+const shortDate=v=>new Date(v).toLocaleString('es-MX',{dateStyle:'short',timeStyle:'short'});
+const tzOf=()=>model.house.zona_horaria||'America/Mexico_City';
 
-/* ---------- Sensores ---------- */
-function spark(a){const w=92,h=30,max=Math.max(...a,1),step=w/(a.length-1);const pts=a.map((v,i)=>[i*step,h-(v/max)*(h-4)-2]);const d=pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' ');return `<svg class="spark" viewBox="0 0 ${w} ${h}"><path pathLength="1" d="${d}"/></svg>`}
-function sensorCard(s){return `<button class="sensor ${s.st==='alert'?'alert':''}" style="--c:${s.c};--t:${s.t}" onclick="toast('Detalle de ${s.name} disponible pronto')">
- <div class="s-top"><span class="s-ico"><i data-i="${s.icon}"></i></span><span class="pill ${s.st}"><i class="dot"></i>${stText[s.st]}</span></div>
- <div><div class="s-name">${s.name}</div><div class="s-meta">${s.meta}</div></div>
- <div class="s-read"><strong>${s.flow}<small>L/min</small></strong>${spark(s.s)}</div></button>`}
-function renderSensors(){const h=sensors.map(sensorCard).join('');$('#sensor-list').innerHTML=h;$('#sensor-list-full').innerHTML=h;hydrate()}
-function theme(n){n=n.toLowerCase();if(/boiler|calentador|caliente/.test(n))return{icon:'flame',c:'#df4148',t:'#ffe3e1'};if(/baño|ducha/.test(n))return{icon:'bath',c:'#d58a00',t:'#fff1cf'};if(/lav|ropa/.test(n))return{icon:'wash',c:'#df4148',t:'#ffe3e1'};if(/jard|riego/.test(n))return{icon:'sprout',c:'#718392',t:'#edf2f5'};return{icon:'faucet',c:'#129ecf',t:'#e2f5fb'}}
+async function load(quiet=false){if(!session)return false;if(busy)return loadedOnce;busy=true;$('#sb-status').textContent='Actualizando…';
+ try{const houses=await query('casas',{select:'id,nombre,zona_horaria,modo_monitoreo,cierre_segundos,periodo_registro',order:'creado_en.asc'});
+  if(!houses.length){showMode('activate');$('#sb-status').textContent='Instalación pendiente';return false}
+  const house=houses.find(x=>x.nombre==='HYDRIX DEMO - Datos de prueba')||houses[0],id='eq.'+house.id;
+  const since=new Date(Date.now()-32*864e5).toISOString(),day=new Date(Date.now()-24*3600e3).toISOString();
+  const T=[['puntos_medicion',{select:'id,nombre,ubicacion_id,es_consumo_total,diametro_interno_mm,activo'}],
+   ['sensores_fisicos',{select:'id,punto_id,estado,ultima_lectura_en,bateria_pct,retirado_en'}],
+   ['lecturas',{select:'id,punto_id,sensor_id,medido_en,flujo_l_min',medido_en:'gte.'+day,order:'medido_en.desc',limit:2000}],
+   ['resumenes_medicion',{select:'punto_id,intervalo,inicio,litros_totales,flujo_max_l_min',inicio:'gte.'+since,order:'inicio.desc',limit:2000}],
+   ['eventos_consumo',{select:'id,punto_id,inicio,fin,litros',order:'inicio.desc',limit:100}],
+   ['valvulas',{select:'id,nombre,estado,principal,activa,ultima_confirmacion_en'}],
+   ['alertas',{select:'id,tipo,subtipo,estado,descripcion,detectada_en,cierre_programado_en,distancia_estimada_m',order:'detectada_en.desc',limit:100}],
+   ['comandos_valvula',{select:'id,accion,estado,motivo,solicitado_en',order:'solicitado_en.desc',limit:50}],
+   ['metas_consumo',{select:'periodo,limite_litros'}]];
+  const data=await Promise.all(T.map(([t,p])=>query(t,{...p,casa_id:id})));const m={house};T.forEach(([t],i)=>m[t]=data[i]);
+  let name='';try{name=(await query('perfiles',{select:'nombre',usuario_id:'eq.'+session.user.id,limit:1}))[0]?.nombre}catch{}
+  m.name=name||session.user.email?.split('@')[0]||'Usuario';model=m;loadedOnce=true;renderAll();
+  $('#sb-status').textContent='Conectado · '+house.nombre;if(!quiet)toast('Datos actualizados');return true}
+ catch(err){$('#sb-status').textContent='Error de conexión';if(err.message.includes('Inicia sesión'))logout();else if(/JWT|expired/i.test(err.message))logout();else if(!quiet)toast(err.message);return loadedOnce}
+ finally{busy=false}}
 
-/* ---------- Gráfica 24 h ---------- */
-function renderChart(){const v=[25,35,31,42,50,36,57,42,28,37,25,22,40,33,29,46,38,31,44,52,34,39,28,32];$('#chart').innerHTML=v.map((x,i)=>`<div class="bar ${i===6||i===19?'hot':''}" style="--h:${x*2.6}px;--i:${i}"><span class="tip">${String(i).padStart(2,'0')}:00 · ${x} L</span></div>`).join('')}
+/* ---------- cálculos ---------- */
+const totalPoint=()=>model.puntos_medicion.find(x=>x.es_consumo_total&&x.activo)||null;
+const tracked=()=>{const p=totalPoint();return p?[p.id]:model.puntos_medicion.filter(x=>x.activo).map(x=>x.id)};
+const sums=i=>{const ids=tracked();return model.resumenes_medicion.filter(x=>x.intervalo===i&&ids.includes(x.punto_id))};
+function sumDay(date){const tz=tzOf(),h=sums('hora').filter(x=>dayKey(x.inicio,tz)===date);if(h.length)return h.reduce((a,x)=>a+num(x.litros_totales),0);return sums('dia').filter(x=>dayKey(x.inicio,tz)===date).reduce((a,x)=>a+num(x.litros_totales),0)}
+const goal=p=>num(model.metas_consumo.find(x=>x.periodo===p)?.limite_litros);
+const ACTIVE=['activa','cerrando','valvula_cerrada','en_prueba','error'];
+const curAlert=()=>model.alertas.find(x=>ACTIVE.includes(x.estado));
+const mainValve=()=>model.valvulas.find(x=>x.principal&&x.activa)||model.valvulas.find(x=>x.activa);
 
-/* ---------- Tubería + válvula ---------- */
-const pipeSVG=`<svg class="pipe" viewBox="0 0 240 50" aria-hidden="true"><rect class="body" x="0" y="17" width="240" height="16" rx="8"/><line class="flow" x1="8" y1="25" x2="104" y2="25"/><line class="flow after" x1="136" y1="25" x2="232" y2="25"/><circle class="hub" cx="120" cy="25" r="13"/><g class="wheel"><path d="M120 5v40M100 25h40" stroke="#0b4f7c" stroke-width="3" stroke-linecap="round" fill="none"/></g></svg>`;
-function setValve(open,silent){
- state.valve=open;
- $$('[data-pipe]').forEach(e=>{if(!e.firstChild)e.innerHTML=pipeSVG});
- $$('#valve-card,#valve-big').forEach(e=>e.classList.toggle('closed',!open));
- $$('[data-valve-switch]').forEach(s=>s.setAttribute('aria-checked',open));
- $$('[data-valve-text]').forEach(e=>e.textContent=open?'Abierta':'Cerrada');
- $$('[data-valve-copy]').forEach(e=>e.textContent=open?'Paso de agua activo':'Paso de agua detenido');
- $$('[data-valve-title]').forEach(e=>e.textContent=open?'Válvula abierta':'Válvula cerrada');
- $$('[data-valve-sub]').forEach(e=>e.textContent=open?'El agua fluye con normalidad.':'El paso de agua está detenido.');
- const p=$('#valve-pill');p.className='pill '+(open?'ok':'alert');p.innerHTML=`<i class="dot"></i>${open?'Abierta':'Cerrada'}`;
- if(!open){$('#flow-value').textContent='0.0'}
- if(!silent){
-  const now=new Date().toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit',hour12:false});
-  events.unshift({t:'Hoy, '+now,title:open?'Válvula abierta':'Válvula cerrada',sub:'Sistema principal · Comando ejecutado',type:'valvula',cls:'ok',label:'Correcto'});
-  renderEvents();renderCmds();toast(open?'Válvula abierta correctamente':'Válvula cerrada correctamente');
-  if(!open&&state.cdOn){stopCountdown('Válvula cerrada')}
- }
-}
-function renderCmds(){const c=events.filter(e=>e.type==='valvula').slice(0,4);$('#cmds').innerHTML=c.map(e=>`<div class="cmd"><span>${e.t} · ${e.title.replace('Válvula ','')==='abierta'?'Abrir válvula':'Cerrar válvula'}</span><strong>Ejecutado</strong></div>`).join('')}
+function renderAll(){const m=model,tz=tzOf(),today=dayKey(Date.now(),tz),[y,mo,d]=today.split('-').map(Number);
+ const dG=goal('diario'),wG=goal('semanal'),mG=goal('mensual'),todayL=sumDay(today);
+ const weekL=Array.from({length:7},(_,i)=>new Date(Date.UTC(y,mo-1,d-i)).toISOString().slice(0,10)).reduce((a,k)=>a+sumDay(k),0);
+ const tp=totalPoint(),fresh=m.lecturas.find(x=>!tp||x.punto_id===tp.id),flow=fresh&&Date.now()-new Date(fresh.medido_en)<10*60e3?num(fresh.flujo_l_min):null;
+ $('#cnt').textContent=fmt(todayL,1);$('#fl').textContent=flow===null?'—':fmt(flow,2);
+ $('#daily-note').textContent=dG?`Quedan ${fmt(Math.max(0,dG-todayL),1)} L de tu meta diaria (${fmt(dG)} L)`:'Sin meta diaria configurada';
+ $('#pb').style.width=dG?Math.min(100,todayL/dG*100)+'%':'0%';
+ const pct=wG?Math.round(weekL/wG*100):0;$('#gp').textContent=pct;$('#rg').style.strokeDashoffset=276.46*(1-Math.min(100,pct)/100);
+ $('#w0').textContent=fmt(weekL,1);$('#wnote').textContent=wG?' / '+fmt(wG)+' L':' · sin meta';$('#wrem').textContent=wG?'Restante: '+fmt(Math.max(0,wG-weekL),1)+' L':'';
+ $('#gd').textContent=dG?fmt(dG)+' L':'Sin meta';$('#gw').textContent=wG?fmt(wG)+' L':'Sin meta';$('#gm').textContent=mG?fmt(mG)+' L':'Sin meta';
+ const live=m.sensores_fisicos.filter(x=>!x.retirado_en);
+ $('#ms').textContent=live.filter(x=>x.ultima_lectura_en&&Date.now()-new Date(x.ultima_lectura_en)<10*60e3).length+' de '+live.length;
+ const on=!!m.house.modo_monitoreo;document.body.dataset.armed=on?1:0;
+ $('#gt').textContent=on?'Monitoreo activo':'Monitoreo apagado';
+ $('#gs').textContent=on?'Vigilamos tus sensores y te avisamos si hay una fuga.':'La gota está vacía: los sensores registran consumo, pero no se generan alertas.';
+ $('#hint').textContent=on?'Toca la gota para apagar el monitoreo':'Toca la gota para activar el monitoreo';
+ $('#dl').innerHTML=ic(on?'lock':'warn')+`<b>${on?'Activo':'Inactivo'}</b><small>Toca para cambiar</small>`;$('#guard').setAttribute('aria-label',on?'Monitoreo activo. Toca para apagar':'Monitoreo apagado. Toca para activar');$('#guard').setAttribute('aria-pressed',String(on));
+ renderSensors();renderValve();renderAlerts();renderChart();renderWeek();renderCalendar();renderEvents();renderCmds();head()}
 
-/* ---------- Alerta / cuenta regresiva ---------- */
-const mmss=s=>String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');
-function paintCd(){$$('[data-cd]').forEach(e=>e.textContent=state.cdOn?mmss(state.cd):'—')}
-function stopCountdown(reason){
- state.cdOn=false;state.leak=false;paintCd();
- const c=$('#alert-card');c.classList.add('calm');
- $('#alert-title').textContent=reason==='Cierre cancelado'?'Cierre automático cancelado':'Agua cortada';
- $('#alert-text').innerHTML=reason==='Cierre cancelado'?'La válvula sigue abierta. Revisa <strong>Lavandería</strong> lo antes posible.':'La válvula está cerrada. Revisa <strong>Lavandería</strong> y vuelve a abrirla cuando esté listo.';
- $('#cd-label').textContent='Estado';$('#alert-card .cd-row strong').textContent=reason==='Cierre cancelado'?'En pausa':'Protegido';
- $('#alert-card .btns').innerHTML='<button class="btn ghost" data-open="alert-modal">Ver detalle</button>';
- $('#alert-card .btns [data-open]').addEventListener('click',()=>openModal('alert-modal'));
- $('#bell-badge').style.display='none';
- $('#page-subtitle').textContent=state.valve?'La alerta sigue pendiente de revisión.':'Tu hogar está protegido.';
- closeModal('alert-modal');
-}
-setInterval(()=>{if(!state.cdOn)return;state.cd--;paintCd();if(state.cd<=0){setValve(false);toast('Cierre automático ejecutado')}},1000);
-function cancelClosure(){if(!state.cdOn){toast('No hay cierre pendiente');return}stopCountdown('Cierre cancelado');toast('Cierre cancelado. La válvula conserva su estado')}
-function closeNow(){setValve(false)}
+const SL={normal:'Normal',anomalia:'Anomalía',sin_datos:'Sin datos',desconectado:'Desconectado'};
+function sensorRows(){const m=model;return m.sensores_fisicos.filter(x=>!x.retirado_en).map(s=>({s,p:m.puntos_medicion.find(x=>x.id===s.punto_id),r:m.lecturas.find(x=>x.sensor_id===s.id),st:s.estado==='anomalia'?'alert':s.estado==='normal'?'ok':'off'}))}
+function renderSensors(){const html=sensorRows().map((o,i)=>{const rec=o.r&&Date.now()-new Date(o.r.medido_en)<10*60e3;
+ return`<button class="sensor ${o.st}" onclick="sensorModal(${i})"><div class="s-top"><span class="s-ico">${ic('drop')}</span><span class="pill" style="--c:${o.st==='alert'?'var(--bad)':o.st==='ok'?'var(--ok)':'#758795'}">${esc(SL[o.s.estado]||o.s.estado)}</span></div><div><div class="s-name">${esc(o.p?.nombre||'Sensor')}</div><div class="s-meta">${o.r?'Última lectura: '+esc(shortDate(o.r.medido_en)):'Sin lecturas recientes'}</div></div><div class="s-read"><strong>${rec?fmt(o.r.flujo_l_min,2):'—'}<small>L/min</small></strong></div></button>`}).join('')||'<div class="empty">Aún no hay sensores registrados.</div>';
+ $$('[data-sensors]').forEach(e=>e.innerHTML=html)}
+function sensorModal(i){const o=sensorRows()[i];if(!o)return;modal(o.p?.nombre||'Sensor',SL[o.s.estado]||o.s.estado,rows([['Flujo más reciente',o.r?fmt(o.r.flujo_l_min,2)+' L/min':'Sin lecturas'],['Fecha de lectura',o.r?shortDate(o.r.medido_en):'—'],['Batería',o.s.bateria_pct==null?'Sin dato':fmt(o.s.bateria_pct)+' %'],['Diámetro interno',o.p?.diametro_interno_mm?fmt(o.p.diametro_interno_mm,1)+' mm':'Sin dato']]))}
 
-/* ---------- Metas ---------- */
-function renderGoal(){
- const g=state.goal,pct=Math.round(state.consumedWeek/g.weekly*100),left=Math.max(0,g.weekly-state.consumedWeek),dLeft=Math.max(0,g.daily-state.consumedToday);
- $$('[data-goal-daily]').forEach(e=>e.textContent=fmt(g.daily));
- $$('[data-goal-weekly]').forEach(e=>e.textContent=fmt(g.weekly));
- $$('[data-goal-week-left]').forEach(e=>e.textContent=fmt(left));
- $$('[data-goal-left]').forEach(e=>e.textContent=fmt(dLeft)+' L');
- $('#goal-pct').textContent=Math.min(pct,999);
- $('#ring-fg').style.strokeDashoffset=276.46*(1-Math.min(pct,100)/100);
- const tp=Math.min(100,Math.round(state.consumedToday/g.daily*100));
- $('#water').style.height=tp+'%';$('#tank-pct').textContent=tp;
- $('#goal-action').textContent=g.action==='solo_aviso'?'Solo aviso':'Cierre automático';
- renderWeek();
-}
-function renderWeek(){
- const d=[['Vie',401],['Sáb',373],['Dom',380],['Lun',390],['Mar',412],['Mié',284]],max=Math.max(...d.map(x=>x[1]),state.goal.daily)*1.1,H=118;
- $('#week').innerHTML=d.map((x,i)=>`<div class="col ${i===5?'today':''}"><div class="b" style="--h:${x[1]/max*H}px;--i:${i}" title="${x[1]} L"></div><span>${i===5?'Hoy':x[0]}</span></div>`).join('');
- $('#week-wrap').style.setProperty('--goal',state.goal.daily/max*H);
-}
+const valveSVG=`<svg class="pipe" viewBox="0 0 240 50" aria-hidden="true"><rect class="body" y="17" width="240" height="16" rx="8"/><line class="flow" x1="8" y1="25" x2="104" y2="25"/><line class="flow after" x1="136" y1="25" x2="232" y2="25"/><circle class="hub" cx="120" cy="25" r="13"/><g class="wheel"><path d="M120 5v40M100 25h40" stroke-width="3" stroke-linecap="round"/></g></svg>`;
+function renderValve(){const v=mainValve(),state=v?.estado||'sin datos',open=state==='abierta';document.body.classList.toggle('vc',state!=='abierta');
+ $$('[data-vx]').forEach(e=>e.textContent=state[0].toUpperCase()+state.slice(1).replace('_',' '));
+ $$('[data-valve]').forEach(e=>e.innerHTML=valveSVG+`<div class="vr"><div><h3>${esc(v?.nombre||'No hay válvula registrada')}</h3><p>Estado confirmado: ${esc(state)}${v?.ultima_confirmacion_en?' · '+esc(shortDate(v.ultima_confirmacion_en)):''}</p></div><button class="switch" role="switch" aria-label="${open?'Cerrar':'Abrir'} válvula principal" aria-checked="${open}" ${v?'':'disabled'} onclick="setValve(${!open})"></button></div>`);
+ $('#vpill').className='pill '+(open?'ok':state==='cerrada'?'alert':'off');$('#vpill').textContent=state}
+function renderAlerts(){const a=curAlert(),card=$('#alert');card.className='card alert-card '+(a?'alert':'ok');
+ $('#aico').innerHTML=ic(a?'warn':'check');
+ $('#at').textContent=a?(a.tipo==='desconexion'?'Sensor desconectado':'Alerta de flujo'):'Sin alertas activas';
+ $('#ax').textContent=a?(a.descripcion||`${a.subtipo||a.tipo} · ${a.estado}`):'Todo en orden: no hay alertas registradas.';
+ $('#bdg').hidden=!a;$('#adet').disabled=!a;
+ const closing=a&&a.cierre_programado_en&&new Date(a.cierre_programado_en)>Date.now();
+ $('#aclose').hidden=!a;$('#acancel').hidden=!closing;
+ $('#al').textContent=closing?'Cierre automático en':a?'Estado':'Última revisión';
+ tickCd()}
+function tickCd(){if(!model)return;const a=curAlert(),el=$('#av');
+ if(a&&a.cierre_programado_en){const s=Math.max(0,Math.round((new Date(a.cierre_programado_en)-Date.now())/1000));el.textContent=s>0?`${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`:a.estado}
+ else el.textContent=a?a.estado:new Date().toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'})}
+setInterval(tickCd,1000);
+function alertModal(){const a=curAlert();if(!a)return;modal('Detalle de alerta',a.descripcion||a.tipo,rows([['Tipo',a.tipo],['Subtipo',a.subtipo||'—'],['Estado',a.estado],['Detectada',shortDate(a.detectada_en)],['Cierre programado',a.cierre_programado_en?shortDate(a.cierre_programado_en):'No programado'],['Distancia estimada',a.distancia_estimada_m==null?'Sin dato':fmt(a.distancia_estimada_m,1)+' m']]))}
 
-/* ---------- Calendario ---------- */
-function dayData(d){
- if(d===23)return{total:284,ev:2,cls:''};
- const high=[6,13,19].includes(d),med=[4,10,16].includes(d);
- const total=high?520+(d*7)%60:med?455+(d*5)%40:250+(d*53)%180;
- return{total,ev:high?2:med?1:0,cls:high?'high':med?'med':''};
-}
-function renderCal(){
- const first=1; // 1 de septiembre de 2026 cae en martes
- let h=['L','M','X','J','V','S','D'].map(x=>`<span class="h">${x}</span>`).join('');
- for(let i=0;i<first;i++)h+='<span></span>';
- for(let d=1;d<=30;d++){const x=dayData(d);h+=`<button class="day ${x.cls} ${d===23?'sel':''}" data-day="${d}" ${d>23?'disabled':''}>${d}</button>`}
- $('#cal-grid').innerHTML=h;
- $$('.day:not(:disabled)').forEach(b=>b.addEventListener('click',()=>{$$('.day').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');showDay(+b.dataset.day)}));
-}
-function showDay(d){
- const x=dayData(d),over=x.total>state.goal.daily;
- $('#day-title').textContent=d+' de septiembre';
- tween0('#d-total',x.total,' L',0);tween0('#d-avg',x.total/24,' L',1);tween0('#d-max',x.total*.15,' L',1);
- $('#d-ev').textContent=x.ev?x.ev+(x.ev>1?' avisos':' aviso'):'Sin eventos';
- const p=$('#day-pill');p.className='pill '+(over?'alert':'ok');p.innerHTML=`<i class="dot"></i>${over?'Sobre la meta':'Dentro de meta'}`;
-}
-function tween0(sel,to,suf,dec){const el=$(sel),t0=performance.now();(function f(n){const p=Math.min(1,(n-t0)/500),e=1-Math.pow(1-p,3);el.textContent=(to*e).toFixed(dec)+suf;if(p<1)requestAnimationFrame(f)})(t0)}
+function renderChart(){const tz=tzOf(),now=Date.now(),hourly=sums('hora');let h='';
+ for(let i=23;i>=0;i--){const st=new Date(now-i*3600e3),key=dayKey(st,tz)+' '+hourKey(st,tz);
+  const val=hourly.filter(x=>dayKey(x.inicio,tz)+' '+hourKey(x.inicio,tz)===key).reduce((a,x)=>a+num(x.litros_totales),0);
+  h+=`<div class="bar" style="--h:${Math.max(val?3:0,Math.min(140,val*12))}px;--i:${23-i}"><span>${esc(hourKey(st,tz))}:00 · ${fmt(val,2)} L</span></div>`}
+ $('#chart').innerHTML=h;$('#axis').innerHTML=[0,4,8,12,16,20].map(i=>`<span>${hourKey(new Date(now-(23-i)*3600e3),tz)}:00</span>`).join('')}
+function renderWeek(){const tz=tzOf(),lim=goal('diario'),v=[];
+ for(let i=6;i>=0;i--){const d=new Date(Date.now()-i*864e5),k=dayKey(d,tz);v.push({k,value:sumDay(k),label:d.toLocaleDateString('es-MX',{weekday:'short',timeZone:tz})})}
+ const max=Math.max(lim,...v.map(x=>x.value),1);
+ $('#week').innerHTML=v.map((x,i)=>`<div class="col ${i===6?'now':''}"><div class="b" style="--h:${Math.max(x.value?2:0,x.value/max*125)}px;--i:${i}" title="${esc(x.k)}: ${fmt(x.value,2)} L"></div><span>${esc(x.label)}</span></div>`).join('')}
+function renderCalendar(){const tz=tzOf(),today=dayKey(Date.now(),tz),[y,mo]=today.split('-').map(Number),days=new Date(y,mo,0).getDate(),first=(new Date(y,mo-1,1).getDay()+6)%7,g=goal('diario');
+ $('#calt').textContent=new Date(y,mo-1,1).toLocaleDateString('es-MX',{month:'long',year:'numeric'});
+ let h=['L','M','X','J','V','S','D'].map(x=>`<span class="h">${x}</span>`).join('')+'<span></span>'.repeat(first);
+ for(let d=1;d<=days;d++){const k=`${y}-${String(mo).padStart(2,'0')}-${String(d).padStart(2,'0')}`,v=sumDay(k),c=g&&v>g?'high':g&&v>g*.8?'med':'';
+  h+=`<button class="day ${c} ${k===(selectedDay||today)?'sel':''}" data-day="${k}" ${k>today?'disabled':''}>${d}</button>`}
+ $('#cal').innerHTML=h;$$('.day:not(:disabled)').forEach(b=>b.onclick=()=>{selectedDay=b.dataset.day;$$('.day').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');showDay(selectedDay)});showDay(selectedDay||today)}
+function showDay(k){const tz=tzOf(),v=sumDay(k),cnt=model.eventos_consumo.filter(x=>dayKey(x.inicio,tz)===k).length,g=goal('diario'),
+ max=Math.max(0,...model.resumenes_medicion.filter(x=>x.intervalo==='hora'&&tracked().includes(x.punto_id)&&dayKey(x.inicio,tz)===k).map(x=>num(x.flujo_max_l_min)));
+ $('#dtl').textContent=new Date(k+'T12:00:00').toLocaleDateString('es-MX',{day:'numeric',month:'long',year:'numeric'});
+ $('#dt').textContent=fmt(v,2)+' L';$('#da').textContent=fmt(v/24,2)+' L';$('#dm').textContent=fmt(max,2)+' L/min';$('#de').textContent=cnt+' eventos';
+ $('#dpl').className='pill '+(g&&v>g?'alert':'ok');$('#dpl').textContent=g&&v>g?'Sobre la meta':'Dentro de la meta'}
+function allEvents(){const m=model,it=[];
+ for(const a of m.alertas)it.push({time:a.detectada_en,type:'fuga',title:a.tipo==='desconexion'?'Desconexión':'Alerta: '+(a.subtipo||'anomalía'),sub:a.descripcion||a.estado,cls:ACTIVE.includes(a.estado)?'alert':'ok',label:a.estado});
+ for(const e of m.eventos_consumo)it.push({time:e.inicio,type:'consumo',title:'Consumo registrado',sub:`${fmt(e.litros,2)} L · ${m.puntos_medicion.find(x=>x.id===e.punto_id)?.nombre||'Punto de medición'}`,cls:'ok',label:'Consumo'});
+ for(const c of m.comandos_valvula)it.push({time:c.solicitado_en,type:'valvula',title:'Comando: '+c.accion,sub:(c.motivo||'')+' · '+c.estado,cls:c.estado==='fallido'?'alert':'ok',label:c.estado});
+ return it.sort((a,b)=>new Date(b.time)-new Date(a.time))}
+function renderEvents(){const f=$('#filter').value||'todos',it=allEvents().filter(x=>f==='todos'||x.type===f);
+ $('#events').innerHTML=it.length?it.map(x=>`<div class="ev"><small>${esc(shortDate(x.time))}</small><div><strong>${esc(x.title)}</strong><small>${esc(x.sub)}</small></div><span class="pill ${x.cls}">${esc(x.label)}</span></div>`).join(''):'<div class="empty">No hay eventos de este tipo.</div>'}
+function renderCmds(){const it=model.comandos_valvula;$('#cmds').innerHTML=it.length?it.map(x=>`<div class="cmd"><span>${esc(shortDate(x.solicitado_en))} · ${esc(x.accion)}</span><strong>${esc(x.estado)}</strong></div>`).join(''):'<div class="empty">Todavía no hay comandos.</div>'}
 
-/* ---------- Historial ---------- */
-function renderEvents(){
- const f=$('#filter').value,list=events.filter(e=>f==='todos'||e.type===f);
- $('#events').innerHTML=list.length?list.map((e,i)=>`<div class="ev" style="--i:${i}"><small>${e.t}</small><div><strong>${e.title}</strong><small>${e.sub}</small></div><span class="pill ${e.cls}">${e.label}</span></div>`).join(''):'<div class="empty">No hay eventos de este tipo.</div>';
-}
+/* ---------- navegación ---------- */
+const V=[['inicio','home','Inicio'],['sensores','radio','Sensores'],['calendario','cal','Calendario'],['metas','target','Metas'],['historial','clock','Historial'],['valvula','sliders','Válvula']];
+const TT={inicio:'Inicio',sensores:'Sensores',calendario:'Calendario',metas:'Metas de consumo',historial:'Historial',valvula:'Válvula principal'};
+$('#nav').innerHTML=V.map(v=>`<button data-v="${v[0]}">${ic(v[1])}<span>${v[2]}</span></button>`).join('');$$('#nav button').forEach(b=>b.onclick=()=>go(b.dataset.v));
+function head(){$('#pt').textContent=cur==='inicio'?'Hola, '+(model?.name||''):TT[cur];$('#ps').textContent=model?model.house.nombre:''}
+function go(id){cur=id;$$('.view').forEach(v=>v.classList.toggle('on',v.id===id));$$('#nav button').forEach(b=>b.classList.toggle('on',b.dataset.v===id));head();scrollTo({top:0,behavior:'smooth'})}
 
-/* ---------- Navegación y modales ---------- */
-const titles={inicio:['Hola, Luis Emilio',null],sensores:['Sensores','Puntos de monitoreo de tu hogar.'],calendario:['Calendario','Consulta el consumo por día.'],metas:['Metas de consumo','Mantén el consumo de tu hogar bajo control.'],historial:['Historial','Actividad reciente de tu sistema.'],valvula:['Válvula principal','Controla el paso de agua de forma segura.']};
-function showView(id){
- $$('.view').forEach(v=>v.classList.toggle('active',v.id===id));
- $$('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.view===id));
- $('#page-title').textContent=titles[id][0];
- $('#page-subtitle').textContent=titles[id][1]||(state.leak?'Hay 1 alerta que necesita tu atención.':state.valve?'Todo en orden con tus sensores.':'Tu hogar está protegido.');
- if(id==='metas')renderWeek();
- if(id==='historial')renderEvents();
- window.scrollTo({top:0,behavior:'smooth'});
-}
-function openModal(id){$('#'+id).classList.add('open')}
-function closeModal(id){$('#'+id).classList.remove('open')}
+/* ---------- acciones ---------- */
+async function act(fn,okMsg){try{await fn();await load(true);toast(okMsg)}catch(err){toast('No se pudo completar: '+err.message)}}
+function toggleGuard(){if(!model)return;const on=!model.house.modo_monitoreo;
+ act(async()=>{const r=await rest('PATCH','casas',{params:{id:'eq.'+model.house.id},body:{modo_monitoreo:on}});if(!r.length)throw Error('tu cuenta no tiene permiso para cambiar el monitoreo')},on?'Monitoreo activado':'Monitoreo apagado')}
+function setValve(open){const v=mainValve();if(!v)return toast('No hay una válvula registrada');
+ act(()=>rest('POST','comandos_valvula',{body:{casa_id:model.house.id,valvula_id:v.id,accion:open?'abrir':'cerrar',estado:'pendiente',motivo:'manual'}}),open?'Comando enviado: abriendo válvula':'Comando enviado: cerrando válvula')}
+function cancelClose(){const a=curAlert();if(!a)return;
+ act(async()=>{const r=await rest('PATCH','alertas',{params:{id:'eq.'+a.id},body:{estado:'resuelta'}});if(!r.length)throw Error('sin permiso para cancelar la alerta')},'Cierre automático cancelado')}
+function goalModal(){if(!model)return;const val=p=>goal(p)||'';
+ modal('Metas de consumo','Define tus límites para el hogar.',`<form id="gf" class="form"><div class="field"><label for="g-d">Litros por día</label><input id="g-d" type="number" min="1" step="0.01" required value="${esc(val('diario'))}"></div><div class="field"><label for="g-w">Litros por semana</label><input id="g-w" type="number" min="1" step="0.01" required value="${esc(val('semanal'))}"></div><div class="field full"><label for="g-m">Litros por mes</label><input id="g-m" type="number" min="1" step="0.01" required value="${esc(val('mensual'))}"></div><div class="actions"><button type="button" class="btn ghost" onclick="closeM()">Cancelar</button><button type="submit" class="btn primary">Guardar metas</button></div></form>`);
+ $('#gf').onsubmit=async e=>{e.preventDefault();const d=+$('#g-d').value,w=+$('#g-w').value,mo=+$('#g-m').value,b=e.target.querySelector('[type=submit]');
+  if(!(d>0&&w>=d&&mo>=w)){toast('La meta semanal debe ser ≥ la diaria y la mensual ≥ la semanal');return}
+  b.disabled=true;try{await rest('POST','configurar_metas_consumo',{rpc:1,body:{p_diaria:d,p_semanal:w,p_mensual:mo}});closeM();await load(true);toast('Metas guardadas')}catch(err){toast(err.message)}finally{b.disabled=false}}}
+$('#bell').onclick=()=>{const c=model?model.alertas.filter(x=>ACTIVE.includes(x.estado)).length:0;toast(c?`${c} alerta(s) activa(s)`:'Sin alertas activas')};
+$('#filter').innerHTML='<option value="todos">Todos los eventos</option><option value="fuga">Alertas</option><option value="consumo">Consumo</option><option value="valvula">Válvula</option>';$('#filter').onchange=renderEvents;
 
-/* ---------- Eventos ---------- */
-$$('.nav button').forEach(b=>b.addEventListener('click',()=>showView(b.dataset.view)));
-$$('[data-view-link]').forEach(b=>b.addEventListener('click',()=>showView(b.dataset.viewLink)));
-$$('[data-open]').forEach(b=>b.addEventListener('click',()=>openModal(b.dataset.open)));
-$$('[data-close]').forEach(b=>b.addEventListener('click',()=>closeModal(b.dataset.close)));
-$$('.modal-wrap').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)closeModal(m.id)}));
-document.addEventListener('keydown',e=>{if(e.key==='Escape')$$('.modal-wrap.open').forEach(m=>closeModal(m.id))});
-$('#travel-toggle').addEventListener('click',toggleTravel);
-$('#travel-form').addEventListener('submit',e=>{e.preventDefault();const f=new FormData(e.target),start=formatTravelDate(f.get('start')),end=formatTravelDate(f.get('end'));state.alarmArmed=true;state.travelSchedule=`Programada del ${start} al ${end} · activa ${f.get('startTime')}`;renderTravel();closeModal('travel-modal');toast('Viaje programado. La protección quedó activa')});
-$$('[data-valve-switch]').forEach(s=>s.addEventListener('click',()=>setValve(!state.valve)));
-$('#close-now').addEventListener('click',closeNow);
-$('#modal-close-now').addEventListener('click',()=>{closeModal('alert-modal');closeNow()});
-$('#cancel-close').addEventListener('click',cancelClosure);
-$('#modal-cancel').addEventListener('click',()=>{cancelClosure();closeModal('alert-modal')});
-$('#bell').addEventListener('click',()=>toast(state.leak?'1 alerta activa: fuga en Lavandería':'No tienes alertas nuevas'));
-$('#filter').addEventListener('change',renderEvents);
-$('#sensor-form').addEventListener('submit',e=>{e.preventDefault();const n=new FormData(e.target).get('name');sensors.push({name:n,...theme(n),flow:'0.0',st:'off',meta:'Nueva configuración · ahora',s:[0,0,0,0,0,0,0,0]});renderSensors();closeModal('sensor-modal');e.target.reset();toast('Sensor añadido correctamente')});
-$('#goal-form').addEventListener('submit',e=>{e.preventDefault();const f=new FormData(e.target);state.goal={daily:+f.get('daily'),weekly:+f.get('weekly'),action:f.get('action')};renderGoal();closeModal('goal-modal');toast('Meta actualizada')});
-
-/* ---------- Flujo en vivo ---------- */
-setInterval(()=>{if(!state.valve||document.hidden)return;tween($('#flow-value'),8.4+(Math.random()-.5)*1.6)},3200);
-
-/* ---------- Inicio ---------- */
-hydrate();renderSensors();renderChart();renderCal();renderEvents();renderCmds();setValve(true,true);renderGoal();
-renderTravel();
-$('#page-title').textContent='Hola, Luis Emilio';
-countUp($('[data-count]'),state.consumedToday,1600);
-</script>
-</body>
-</html>
+go('inicio');
+if(session){showMode('login','');$('#gerr').textContent='Conectando…';load(true).then(ok=>{if(ok)unlock();else if(!session)showMode('login')}).catch(()=>showMode('login'))}else showMode('login');
+setInterval(()=>{if(!document.hidden&&session&&loadedOnce)load(true)},20000);
+</script></body></html>
